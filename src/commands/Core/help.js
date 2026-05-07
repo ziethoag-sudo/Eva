@@ -82,83 +82,83 @@ export async function createInitialHelpMenu(client) {
     embed.addFields(
         {
             name: "🛡️ **Moderation**",
-            value: "Server moderation, user management, and enforcement tools",
+            value: "Kiểm duyệt máy chủ, quản lý người dùng và các công cụ thực thi.",
             inline: true
         },
         {
             name: "💰 **Economy**",
-            value: "Currency system, shops, and virtual economy",
+            value: "Hệ thống tiền tệ, cửa hàng và tiền ảo",
             inline: true
         },
         {
             name: "🎮 **Fun**",
-            value: "Games, entertainment, and interactive commands",
+            value: "Trò chơi, giải trí và các lệnh tương tác.",
             inline: true
         },
         {
             name: "📊 **Leveling**",
-            value: "User levels, XP system, and progression tracking",
+            value: "Kinh nghiệm người dùng, kinh nghiệm hệ thống, theo dõi tiến trình",
             inline: true
         },
         {
             name: "🎫 **Tickets**",
-            value: "Support ticket system for server management",
+            value: "Hỗ Trợ tạo vé giành cho Staff+",
             inline: true
         },
         {
             name: "🎉 **Giveaways**",
-            value: "Automated giveaway management and distribution",
+            value: "Tạo giveaway, trao giải,
             inline: true
         },
         {
             name: "👋 **Welcome**",
-            value: "Member welcome messages and onboarding",
+            value: "Tạo welcome và chỉnh sửa welcome",
             inline: true
         },
         {
             name: "🎂 **Birthdays**",
-            value: "Birthday tracking and celebration features",
+            value: "Sinh nhật nha >:3",
             inline: true
         },
         {
             name: "👥 **Community**",
-            value: "Community tools, applications, and member engagement",
+            value: "Community tools, applications, and member engagement (Công cụ cộng đồng, đơn ứng dụng và mức độ tương tác của thành viên.) (gg dịch)",
             inline: true
         },
         {
             name: "⚙️ **Config**",
-            value: "Server and bot configuration management commands",
+            value: "Chỉnh config server",
             inline: true
         },
         {
             name: "🔢 **Counter**",
-            value: "Live counter channel setup and counter controls",
+            value: "Chỉnh Kênh và Setup Kênh",
             inline: true
         },
         {
             name: "🎙️ **Join to Create**",
-            value: "Dynamic voice channel creation and management",
+            value: "Tạo và quản lý kênh nói (voice)",
             inline: true
         },
         {
             name: "🎭 **Reaction Roles**",
-            value: "Self-assignable roles using reaction-role systems",
+            value: "Tự chỉnh roles, tạo roles, setup roles",
             inline: true
         },
         {
             name: "✅ **Verification**",
-            value: "Member verification workflows and access gating",
+            value: "Tạo verify member",
             inline: true
         },
         {
             name: "🔧 **Utilities**",
-            value: "Useful tools and server utilities",
+            value: "Tool cho server",
             inline: true
         }
     );
 
     embed.setFooter({ 
-        text: "Made with ❤️" 
+        text: "Mãi yêu Gok" 
     });
     embed.setTimestamp();
 
