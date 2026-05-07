@@ -107,7 +107,7 @@ export async function createInitialHelpMenu(client) {
         },
         {
             name: "🎉 **Giveaways**",
-            value: "Tạo giveaway, trao giải,
+            value: "Tạo giveaway, trao giải",
             inline: true
         },
         {
