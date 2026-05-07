@@ -56,7 +56,7 @@ export async function createInitialHelpMenu(client) {
     const options = [
         {
             label: "📋 All Commands",
-            description: "View all available commands with pagination",
+            description: "Xem tất cả lệnh",
             value: ALL_COMMANDS_ID,
         },
         ...categoryDirs.map((category) => {
@@ -122,7 +122,7 @@ export async function createInitialHelpMenu(client) {
         },
         {
             name: "👥 **Community**",
-            value: "Community tools, applications, and member engagement (Công cụ cộng đồng, đơn ứng dụng và mức độ tương tác của thành viên.) (gg dịch)",
+            value: "(Công cụ cộng đồng, đơn ứng dụng và mức độ tương tác của thành viên.) (gg dịch)",
             inline: true
         },
         {
@@ -169,12 +169,12 @@ export async function createInitialHelpMenu(client) {
 
     const supportButton = new ButtonBuilder()
         .setLabel("Support Server")
-        .setURL("https://discord.gg/QnWNz2dKCE")
+        .setURL("https://discord.gg/2GMnfpfBt")
         .setStyle(ButtonStyle.Link);
 
     const touchpointButton = new ButtonBuilder()
-        .setLabel("Learn from Touchpoint")
-        .setURL("https://www.youtube.com/@TouchDisc")
+        .setLabel("Learn Gok")
+        .setURL("https://www.facebook.com/ziet.hoag")
         .setStyle(ButtonStyle.Link);
 
     const selectRow = createSelectMenu(
@@ -216,7 +216,7 @@ export default {
             try {
                 const closedEmbed = createEmbed({
                     title: "Help menu closed",
-                    description: "Help menu has been closed, use /help again.",
+                    description: "Bạn dùng quá lâu nên menu sẽ đóng, sài lệnh /help để mở lại.",
                     color: "secondary",
                 });
 
