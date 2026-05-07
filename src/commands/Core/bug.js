@@ -20,7 +20,7 @@ export default {
             description: 'Bạn tìm thấy lỗi? hãy gửi lỗi qua server discord\n\n' +
             '**Khi báo lỗi vui lòng kèm các thông tin sau:**\n' +
             '• ?? Mô tả chi tiết về lỗi\n' +
-            '• ?? Các lỗi xuất hiện từ đâu \n' +
+            '• ?? Các lỗi xuất hiện từ đâu\n' +
             '• ?? Chụp lại lỗi\n' +
             '• ?? Phiên bảng của bot\n\n' +
             'Nếu bạn báo cáo điều này sẽ khiến chúng tôi khắc phục được những sai sót của bot',
