@@ -14,17 +14,17 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('leveladd')
-    .setDescription('Add levels to a user')
+    .setDescription('Thêm cấp cho người dùng')
     .addUserOption((option) =>
       option
         .setName('user')
-        .setDescription('The user to add levels to')
+        .setDescription('Người dùng để thêm cấp')
         .setRequired(true)
     )
     .addIntegerOption((option) =>
       option
         .setName('levels')
-        .setDescription('Number of levels to add')
+        .setDescription('Số cấp để thêm')
         .setRequired(true)
         .setMinValue(1)
     )
@@ -46,7 +46,7 @@ export default {
       const hasPermission = await checkUserPermissions(
         interaction,
         PermissionFlagsBits.ManageGuild,
-        'You need ManageGuild permission to use this command.'
+        'Bạn cần quyền ManageGuild để sử dụng lệnh này.'
       );
       if (!hasPermission) return;
 
@@ -56,7 +56,7 @@ export default {
           embeds: [
             new EmbedBuilder()
               .setColor('#f1c40f')
-              .setDescription('The leveling system is currently disabled on this server.')
+              .setDescription('Hệ thống cấp độ hiện đang bị tắt trên máy chủ này.')
           ],
           flags: MessageFlags.Ephemeral
         });
@@ -70,9 +70,9 @@ export default {
       const member = await interaction.guild.members.fetch(targetUser.id).catch(() => null);
       if (!member) {
         throw new TitanBotError(
-          `User ${targetUser.id} not found in this guild`,
+          `Người dùng ${targetUser.id} không tìm thấy trong máy chủ này`,
           ErrorTypes.USER_INPUT,
-          'The specified user is not in this server.'
+          'Người dùng được chỉ định không có trong máy chủ này.'
         );
       }
 
@@ -82,8 +82,8 @@ export default {
       await InteractionHelper.safeEditReply(interaction, {
         embeds: [
           createEmbed({
-            title: '✅ Levels Added',
-            description: `Successfully added ${levelsToAdd} levels to ${targetUser.tag}.\n**New Level:** ${userData.level}`,
+            title: '✅ Đã Thêm Cấp',
+            description: `Đã thêm thành công ${levelsToAdd} cấp cho ${targetUser.tag}.\n**Cấp Mới:** ${userData.level}`,
             color: 'success'
           })
         ]
