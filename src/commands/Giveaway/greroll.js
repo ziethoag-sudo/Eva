@@ -14,11 +14,11 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
     data: new SlashCommandBuilder()
         .setName("greroll")
-        .setDescription("Rerolls the winner(s) for an ended giveaway.")
+        .setDescription("Chọn lại người thắng cho giveaway đã kết thúc.")
         .addStringOption((option) =>
             option
                 .setName("messageid")
-                .setDescription("The message ID of the ended giveaway.")
+                .setDescription("ID tin nhắn của giveaway đã kết thúc.")
                 .setRequired(true),
         )
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
@@ -28,9 +28,9 @@ export default {
             
             if (!interaction.inGuild()) {
                 throw new TitanBotError(
-                    'Giveaway command used outside guild',
+                    'Lệnh giveaway được dùng ngoài máy chủ',
                     ErrorTypes.VALIDATION,
-                    'This command can only be used in a server.',
+                    'Lệnh này chỉ có thể sử dụng trong máy chủ.',
                     { userId: interaction.user.id }
                 );
             }
@@ -40,12 +40,12 @@ export default {
                 throw new TitanBotError(
                     'User lacks ManageGuild permission',
                     ErrorTypes.PERMISSION,
-                    "You need the 'Manage Server' permission to reroll a giveaway.",
+                    "Bạn cần quyền 'Quản lý máy chủ' để quay lại người thắng giveaway.",
                     { userId: interaction.user.id, guildId: interaction.guildId }
                 );
             }
 
-            logger.info(`Giveaway reroll initiated by ${interaction.user.tag} in guild ${interaction.guildId}`);
+            logger.info(`Bắt đầu quay lại giveaway bởi ${interaction.user.tag} trong máy chủ ${interaction.guildId}`);
 
             const messageId = interaction.options.getString("messageid");
 
@@ -54,7 +54,7 @@ export default {
                 throw new TitanBotError(
                     'Invalid message ID format',
                     ErrorTypes.VALIDATION,
-                    'Please provide a valid message ID.',
+                    'Vui lòng cung cấp ID tin nhắn hợp lệ.',
                     { providedId: messageId }
                 );
             }
@@ -71,7 +71,7 @@ export default {
                 throw new TitanBotError(
                     `Giveaway not found: ${messageId}`,
                     ErrorTypes.VALIDATION,
-                    "No giveaway was found with that message ID in the database.",
+                    "Không tìm thấy giveaway với ID tin nhắn đó trong cơ sở dữ liệu.",
                     { messageId, guildId: interaction.guildId }
                 );
             }
@@ -81,7 +81,7 @@ export default {
                 throw new TitanBotError(
                     `Giveaway still active: ${messageId}`,
                     ErrorTypes.VALIDATION,
-                    "This giveaway is still active. Please use `/gend` to end it first.",
+                    "Giveaway này vẫn đang hoạt động. Vui lòng dùng `/gend` để kết thúc trước.",
                     { messageId, status: 'active' }
                 );
             }
@@ -92,7 +92,7 @@ export default {
                 throw new TitanBotError(
                     `Insufficient participants for reroll: ${participants.length} < ${giveaway.winnerCount}`,
                     ErrorTypes.VALIDATION,
-                    "Not enough entries to pick the required number of winners.",
+                    "Không đủ lượt tham gia để chọn số người thắng yêu cầu.",
                     { participantsCount: participants.length, winnersNeeded: giveaway.winnerCount }
                 );
             }
@@ -115,7 +115,7 @@ export default {
             const channel = await interaction.client.channels.fetch(
                 giveaway.channelId,
             ).catch(err => {
-                logger.warn(`Could not fetch channel ${giveaway.channelId}:`, err.message);
+                logger.warn(`Không thể lấy kênh ${giveaway.channelId}:`, err.message);
                 return null;
             });
 
@@ -127,13 +127,13 @@ export default {
                     updatedGiveaway,
                 );
                 
-                logger.warn(`Could not find channel for giveaway ${messageId}, but saved new winners to database`);
+                logger.warn(`Không thể tìm kênh cho giveaway ${messageId}, nhưng đã lưu người thắng mới vào cơ sở dữ liệu`);
                 
                 return InteractionHelper.safeReply(interaction, {
                     embeds: [
                         successEmbed(
-                            "Reroll Complete",
-                            "The new winners have been selected and saved to the database. Could not find channel to announce.",
+                            "Quay lại hoàn tất",
+                            "Người thắng mới đã được chọn và lưu vào cơ sở dữ liệu. Không tìm thấy kênh để thông báo.",
                         ),
                     ],
                     flags: MessageFlags.Ephemeral,
@@ -144,7 +144,7 @@ export default {
             const message = await channel.messages
                 .fetch(messageId)
                 .catch(err => {
-                    logger.warn(`Could not fetch message ${messageId}:`, err.message);
+                    logger.warn(`Không thể lấy tin nhắn ${messageId}:`, err.message);
                     return null;
                 });
 
@@ -166,16 +166,16 @@ export default {
                     : null;
                 if (existingPingMsg) {
                     await existingPingMsg.edit({
-                        content: `🔄 **GIVEAWAY REROLL** 🔄 New winners for **${giveaway.prize}**: ${winnerMentions}!`,
+                        content: `🔄 **QUAY LẠI GIVEAWAY** 🔄 Người thắng mới cho **${giveaway.prize}**: ${winnerMentions}!`,
                     });
                 } else {
                     const newPingMsg = await channel.send({
-                        content: `🔄 **GIVEAWAY REROLL** 🔄 New winners for **${giveaway.prize}**: ${winnerMentions}!`,
+                        content: `🔄 **QUAY LẠI GIVEAWAY** 🔄 Người thắng mới cho **${giveaway.prize}**: ${winnerMentions}!`,
                     });
                     updatedGiveaway.winnerPingMessageId = newPingMsg.id;
                 }
 
-                logger.info(`Giveaway rerolled (message not found, but announced): ${messageId}`);
+                logger.info(`Đã quay lại giveaway (không tìm thấy tin nhắn gốc, nhưng đã thông báo): ${messageId}`);
 
                 try {
                     await logEvent({
@@ -183,22 +183,22 @@ export default {
                         guildId: interaction.guildId,
                         eventType: EVENT_TYPES.GIVEAWAY_REROLL,
                         data: {
-                            description: `Giveaway rerolled: ${giveaway.prize}`,
+                            description: `Đã quay lại giveaway: ${giveaway.prize}`,
                             channelId: giveaway.channelId,
                             userId: interaction.user.id,
                             fields: [
                                 {
-                                    name: '🎁 Prize',
-                                    value: giveaway.prize || 'Mystery Prize!',
+                                    name: '🎁 Phần thưởng',
+                                    value: giveaway.prize || 'Phần thưởng bí ẩn!',
                                     inline: true
                                 },
                                 {
-                                    name: '🏆 New Winners',
+                                    name: '🏆 Người thắng mới',
                                     value: winnerMentions,
                                     inline: false
                                 },
                                 {
-                                    name: '👥 Total Entries',
+                                    name: '👥 Tổng lượt tham gia',
                                     value: participants.length.toString(),
                                     inline: true
                                 }
@@ -206,14 +206,14 @@ export default {
                         }
                     });
                 } catch (logError) {
-                    logger.debug('Error logging giveaway reroll:', logError);
+                    logger.debug('Lỗi ghi log quay lại giveaway:', logError);
                 }
 
                 return InteractionHelper.safeReply(interaction, {
                     embeds: [
                         successEmbed(
-                            "Reroll Complete",
-                            `The new winners have been announced in ${channel}. (Original message not found).`,
+                            "Quay lại hoàn tất",
+                            `Người thắng mới đã được thông báo trong ${channel}. (Không tìm thấy tin nhắn gốc).`,
                         ),
                     ],
                     flags: MessageFlags.Ephemeral,
@@ -231,7 +231,7 @@ export default {
             const newRow = createGiveawayButtons(true);
 
             await message.edit({
-                content: "🔄 **GIVEAWAY REROLLED** 🔄",
+                content: "🔄 **GIVEAWAY ĐÃ QUAY LẠI** 🔄",
                 embeds: [newEmbed],
                 components: [newRow],
             });
@@ -246,16 +246,16 @@ export default {
                 : null;
             if (existingPingMsg) {
                 await existingPingMsg.edit({
-                    content: `🔄 **REROLL WINNERS** 🔄 CONGRATULATIONS ${winnerMentions}! You are the new winner(s) for the **${giveaway.prize}** giveaway! Please contact the host <@${giveaway.hostId}> to claim your prize.`,
+                    content: `🔄 **QUAY LẠI NGƯỜI THẮNG** 🔄 CHÚC MỪNG ${winnerMentions}! Bạn là người thắng mới cho giveaway **${giveaway.prize}**! Vui lòng liên hệ người tổ chức <@${giveaway.hostId}> để nhận phần thưởng.`,
                 });
             } else {
                 const newPingMsg = await channel.send({
-                    content: `🔄 **REROLL WINNERS** 🔄 CONGRATULATIONS ${winnerMentions}! You are the new winner(s) for the **${giveaway.prize}** giveaway! Please contact the host <@${giveaway.hostId}> to claim your prize.`,
+                    content: `🔄 **QUAY LẠI NGƯỜI THẮNG** 🔄 CHÚC MỪNG ${winnerMentions}! Bạn là người thắng mới cho giveaway **${giveaway.prize}**! Vui lòng liên hệ người tổ chức <@${giveaway.hostId}> để nhận phần thưởng.`,
                 });
                 updatedGiveaway.winnerPingMessageId = newPingMsg.id;
             }
 
-            logger.info(`Giveaway successfully rerolled: ${messageId} with ${newWinners.length} new winners`);
+            logger.info(`Quay lại giveaway thành công: ${messageId} với ${newWinners.length} người thắng mới`);
 
             try {
                 await logEvent({
@@ -263,22 +263,22 @@ export default {
                     guildId: interaction.guildId,
                     eventType: EVENT_TYPES.GIVEAWAY_REROLL,
                     data: {
-                        description: `Giveaway rerolled: ${giveaway.prize}`,
+                        description: `Đã quay lại giveaway: ${giveaway.prize}`,
                         channelId: giveaway.channelId,
                         userId: interaction.user.id,
                         fields: [
                             {
-                                name: '🎁 Prize',
+                                name: '🎁 Phần thưởng',
                                 value: giveaway.prize || 'Mystery Prize!',
                                 inline: true
                             },
                             {
-                                name: '🏆 New Winners',
+                                name: '🏆 Người thắng mới',
                                 value: winnerMentions,
                                 inline: false
                             },
                             {
-                                name: '👥 Total Entries',
+                                name: '👥 Tổng lượt tham gia',
                                 value: participants.length.toString(),
                                 inline: true
                             }
@@ -286,14 +286,14 @@ export default {
                     }
                 });
             } catch (logError) {
-                logger.debug('Error logging giveaway reroll event:', logError);
+                logger.debug('Lỗi ghi log sự kiện quay lại giveaway:', logError);
             }
 
             return InteractionHelper.safeReply(interaction, {
                 embeds: [
                     successEmbed(
-                        "Reroll Successful ✅",
-                        `Successfully rerolled the giveaway for **${giveaway.prize}** in ${channel}. Selected ${newWinners.length} new winner(s).`,
+                        "Quay lại thành công ✅",
+                        `Đã quay lại thành công giveaway với **${giveaway.prize}** tại ${channel}. Đã chọn ${newWinners.length} người thắng mới.`,
                     ),
                 ],
                 flags: MessageFlags.Ephemeral,
