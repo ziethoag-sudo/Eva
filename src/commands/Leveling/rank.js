@@ -12,11 +12,11 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('rank')
-    .setDescription("Check your or another user's rank and level")
+    .setDescription("Kiểm tra cấp và xếp hạng của bạn hoặc người dùng khác")
     .addUserOption((option) =>
       option
         .setName('user')
-        .setDescription('The user to check the rank of')
+        .setDescription('Người dùng để kiểm tra xếp hạng')
         .setRequired(false)
     )
     .setDMPermission(false),
@@ -38,7 +38,7 @@ export default {
           embeds: [
             new EmbedBuilder()
               .setColor('#f1c40f')
-              .setDescription('The leveling system is currently disabled on this server.')
+              .setDescription('Hệ thống cấp độ hiện đang bị tắt trên máy chủ này.')
           ],
           flags: MessageFlags.Ephemeral
         });
@@ -52,9 +52,9 @@ export default {
 
       if (!member) {
         throw new TitanBotError(
-          `User ${targetUser.id} not found in guild`,
+          `Người dùng ${targetUser.id} không tìm thấy trong máy chủ`,
           ErrorTypes.USER_INPUT,
-          'Could not find the specified user in this server.'
+          'Không thể tìm thấy người dùng được chỉ định trong máy chủ này.'
         );
       }
 
@@ -71,11 +71,11 @@ export default {
       const progressBar = createProgressBar(progress, 20);
 
       const embed = new EmbedBuilder()
-        .setTitle(`${member.displayName}'s Rank`)
+        .setTitle(`Xếp Hạng của ${member.displayName}`)
         .setThumbnail(member.displayAvatarURL({ dynamic: true }))
         .addFields(
           {
-            name: '📊 Level',
+            name: '📊 Cấp',
             value: safeUserData.level.toString(),
             inline: true
           },
@@ -85,12 +85,12 @@ export default {
             inline: true
           },
           {
-            name: '✨ Total XP',
+            name: '✨ Tổng XP',
             value: safeUserData.totalXp.toString(),
             inline: true
           },
           {
-            name: `Progress to Level ${safeUserData.level + 1}`,
+            name: `Tiến Độ đến Cấp ${safeUserData.level + 1}`,
             value: `${progressBar} ${progress}%`
           }
         )
