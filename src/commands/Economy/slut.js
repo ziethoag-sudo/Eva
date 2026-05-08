@@ -16,28 +16,28 @@ const SLUT_ACTIVITIES = [
 ];
 
 const POSITIVE_OUTCOMES = [
-    "Your stream blew up and tips poured in.",
-    "A VIP booking paid far above average.",
-    "Your after-hours shift was packed and profitable.",
-    "Premium requests came through and your payout jumped.",
+    "Luồng của bạn bùng nổ và tiền boa đổ về.",
+    "Đặt chỗ VIP trả cao hơn mức trung bình.",
+    "Ca làm sau giờ của bạn đông đúc và có lợi nhuận.",
+    "Yêu cầu cao cấp được thực hiện và thanh toán của bạn tăng vọt.",
 ];
 
 const FINE_OUTCOMES = [
-    "Venue security issued a compliance fine.",
-    "A moderation strike triggered a platform fee.",
-    "You were flagged and had to pay a penalty.",
+    "Bảo vệ địa điểm đã phạt tuân thủ.",
+    "Đánh giá kiểm duyệt kích hoạt phí nền tảng.",
+    "Bạn bị đánh dấu và phải trả phạt.",
 ];
 
 const ROBBED_OUTCOMES = [
-    "A fake buyer chargeback wiped part of your earnings.",
-    "A scam booking cleaned out a chunk of your cash.",
-    "You got baited by a fraud account and lost money.",
+    "Người mua giả hoàn tiền xóa một phần thu nhập của bạn.",
+    "Đặt chỗ lừa đảo làm sạch một phần tiền mặt của bạn.",
+    "Bạn bị mắc lừa bởi tài khoản gian lận và mất tiền.",
 ];
 
 const LOSS_OUTCOMES = [
-    "The set flopped and you had to cover operating costs.",
-    "You burned budget on prep and made no return.",
-    "The shift went sideways and left you in the red.",
+    "Bộ phim thất bại và bạn phải chịu chi phí vận hành.",
+    "Bạn đốt ngân sách cho chuẩn bị và không có lợi nhuận.",
+    "Ca làm đi chệch hướng và để lại bạn trong tình trạng thua lỗ.",
 ];
 
 function randomInt(min, max) {
@@ -60,7 +60,7 @@ function resolveOutcome(activity, wallet) {
             type: 'payout',
             delta: amount,
             message: randomChoice(POSITIVE_OUTCOMES),
-            title: `💰 ${activity.name} - Payout`
+            title: `💰 ${activity.name} - Thanh toán`
         };
     }
 
@@ -74,7 +74,7 @@ function resolveOutcome(activity, wallet) {
             type: 'fine',
             delta: -amount,
             message: randomChoice(FINE_OUTCOMES),
-            title: `🚨 ${activity.name} - Fined`
+            title: `🚨 ${activity.name} - Bị phạt`
         };
     }
 
@@ -86,7 +86,7 @@ function resolveOutcome(activity, wallet) {
             type: 'robbed',
             delta: -amount,
             message: randomChoice(ROBBED_OUTCOMES),
-            title: `🕵️ ${activity.name} - Robbed`
+            title: `🕵️ ${activity.name} - Bị cướp`
         };
     }
 
@@ -97,14 +97,14 @@ function resolveOutcome(activity, wallet) {
         type: 'loss',
         delta: -amount,
         message: randomChoice(LOSS_OUTCOMES),
-        title: `❌ ${activity.name} - Loss`
+        title: `❌ ${activity.name} - Mất mát`
     };
 }
 
 export default {
     data: new SlashCommandBuilder()
         .setName('slut')
-        .setDescription('Take a risky provocative job for random payout or loss'),
+        .setDescription('Nhận một công việc khiêu khích rủi ro để nhận thanh toán ngẫu nhiên hoặc mất mát'),
 
     execute: withErrorHandling(async (interaction, config, client) => {
         const deferred = await InteractionHelper.safeDefer(interaction);
@@ -120,9 +120,9 @@ export default {
 
             if (!userData) {
                 throw createError(
-                    "Failed to load economy data for slut command",
+                    "Không thể tải dữ liệu kinh tế cho lệnh slut",
                     ErrorTypes.DATABASE,
-                    "Failed to load your economy data. Please try again later.",
+                    "Không thể tải dữ liệu kinh tế của bạn. Vui lòng thử lại sau.",
                     { userId, guildId }
                 );
             }
@@ -132,9 +132,9 @@ export default {
             if (now - lastSlut < SLUT_COOLDOWN) {
                 const remainingTime = lastSlut + SLUT_COOLDOWN - now;
                 throw createError(
-                    "Slut cooldown active",
+                    "Thời gian hồi chiêu slut đang hoạt động",
                     ErrorTypes.RATE_LIMIT,
-                    `You need to wait before you can work again! Try again in **${Math.ceil(remainingTime / 60000)}** minutes.`,
+                    `Bạn cần chờ trước khi có thể làm việc lại! Thử lại sau **${Math.ceil(remainingTime / 60000)}** phút.`,
                     { timeRemaining: remainingTime, cooldownType: 'slut' }
                 );
             }
@@ -169,11 +169,11 @@ export default {
             const amountLabel = `${outcome.delta >= 0 ? '+' : '-'}$${Math.abs(outcome.delta).toLocaleString()}`;
             const summaryLines = [
                 `${outcome.message}`,
-                `💸 **Net Result:** ${amountLabel}`,
-                `💳 **Current Balance:** $${userData.wallet.toLocaleString()}`,
-                `📊 **Total Sessions:** ${userData.totalSluts}`,
-                `💵 **Total Earned:** $${(userData.totalSlutEarnings || 0).toLocaleString()}`,
-                `🧾 **Total Lost:** $${(userData.totalSlutLosses || 0).toLocaleString()}`
+                `💸 **Kết quả ròng:** ${amountLabel}`,
+                `💳 **Số dư hiện tại:** $${userData.wallet.toLocaleString()}`,
+                `📊 **Tổng phiên:** ${userData.totalSluts}`,
+                `💵 **Tổng kiếm được:** $${(userData.totalSlutEarnings || 0).toLocaleString()}`,
+                `🧾 **Tổng mất:** $${(userData.totalSlutLosses || 0).toLocaleString()}`
             ];
 
             const embed = createEmbed({
