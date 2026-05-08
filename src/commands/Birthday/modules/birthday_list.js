@@ -19,15 +19,15 @@ export default {
             if (sortedBirthdays.length === 0) {
                 return await InteractionHelper.safeEditReply(interaction, {
                     embeds: [createEmbed({
-                        title: '❌ No Birthdays',
-                        description: 'No birthdays have been set in this server yet.',
+                        title: '❌ Chưa có sinh nhật nào',
+                        description: 'Chưa có sinh nhật nào được thiết lập trong máy chủ này.',
                         color: 'error'
                     })]
                 });
             }
 
             const embed = createEmbed({
-                title: "🎂 Server Birthdays",
+                title: "🎂 Sinh nhật trong máy chủ",
                 color: 'info'
             });
 
@@ -58,37 +58,37 @@ export default {
             if (displayIndex === 0) {
                 return await InteractionHelper.safeEditReply(interaction, {
                     embeds: [createEmbed({
-                        title: '❌ No Birthdays',
-                        description: 'No birthdays have been set by current server members.',
+                        title: '❌ Chưa có sinh nhật nào',
+                        description: 'Không có sinh nhật nào được thiết lập bởi thành viên hiện tại của máy chủ.',
                         color: 'error'
                     })]
                 });
             }
 
-            birthdayList = `**${displayIndex} birthday${displayIndex !== 1 ? 's' : ''} in ${interaction.guild.name}**\n\n` + birthdayList;
+            birthdayList = `**${displayIndex} sinh nhật trong ${interaction.guild.name}**\n\n` + birthdayList;
 
             embed.setDescription(birthdayList);
-            embed.setFooter({ text: `Total: ${displayIndex} birthday${displayIndex !== 1 ? 's' : ''}` });
+            embed.setFooter({ text: `Tổng: ${displayIndex} sinh nhật` });
 
             await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
             
-            logger.info('Birthday list retrieved successfully', {
+            logger.info('Danh sách sinh nhật đã được truy xuất thành công', {
                 userId: interaction.user.id,
                 guildId,
                 birthdayCount: displayIndex,
                 staleRemoved: staleUserIds.length,
-                commandName: 'birthday_list'
+                commandName: 'sinhnhat_danhsach'
             });
         } catch (error) {
-            logger.error("Birthday list command execution failed", {
+            logger.error("Lỗi thực thi lệnh danh sách sinh nhật", {
                 error: error.message,
                 stack: error.stack,
                 userId: interaction.user.id,
                 guildId: interaction.guildId,
-                commandName: 'birthday_list'
+                commandName: 'sinhnhat_danhsach'
             });
             await handleInteractionError(interaction, error, {
-                commandName: 'birthday_list',
+                commandName: 'sinhnhat_danhsach',
                 source: 'birthday_list_module'
             });
         }
