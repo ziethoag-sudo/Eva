@@ -12,17 +12,17 @@ const PICKAXE_MULTIPLIER = 1.2;
 const DIAMOND_PICKAXE_MULTIPLIER = 2.0;
 
 const MINE_LOCATIONS = [
-    "abandoned gold mine",
-    "dark, damp cave",
-    "backyard rock quarry",
-    "volcanic obsidian vent",
-    "deep-sea mineral trench",
+    "mỏ vàng bỏ hoang",
+    "hang tối, ẩm ướt",
+    "mỏ đá sân sau",
+    "ống dung nham obsidian",
+    "rãnh khoáng sản biển sâu",
 ];
 
 export default {
     data: new SlashCommandBuilder()
         .setName('mine')
-        .setDescription('Go mining to earn money'),
+        .setDescription('Đi khai thác để kiếm tiền'),
 
     execute: withErrorHandling(async (interaction, config, client) => {
         const deferred = await InteractionHelper.safeDefer(interaction);
@@ -45,9 +45,9 @@ export default {
                 );
 
                 throw createError(
-                    "Mining cooldown active",
+                    "Thời gian hồi chiêu khai thác đang hoạt động",
                     ErrorTypes.RATE_LIMIT,
-                    `Your pickaxe is cooling down. Wait for **${hours}h ${minutes}m** before mining again.`,
+                    `Cây cuốc của bạn đang hạ nhiệt. Chờ **${hours}h ${minutes}m** trước khi khai thác lại.`,
                     { remaining, cooldownType: 'mine' }
                 );
             }
@@ -62,10 +62,10 @@ export default {
 
             if (hasDiamondPickaxe > 0) {
                 finalEarned = Math.floor(baseEarned * DIAMOND_PICKAXE_MULTIPLIER);
-                multiplierMessage = `\n💎 **Diamond Pickaxe Bonus: +100%**`;
+                multiplierMessage = `\n💎 **Tiền thưởng Cuốc kim cương: +100%**`;
             } else if (hasPickaxe > 0) {
                 finalEarned = Math.floor(baseEarned * PICKAXE_MULTIPLIER);
-                multiplierMessage = `\n⛏️ **Pickaxe Bonus: +20%**`;
+                multiplierMessage = `\n⛏️ **Tiền thưởng Cuốc: +20%**`;
             }
 
             const location =
@@ -79,15 +79,15 @@ userData.lastMine = now;
             await setEconomyData(client, guildId, userId, userData);
 
             const embed = successEmbed(
-                "💰 Mining Expedition Successful!",
-                `You explored a **${location}** and managed to find minerals worth **$${finalEarned.toLocaleString()}**!${multiplierMessage}`,
+                "💰 Chuyến khai thác thành công!",
+                `Bạn đã khám phá **${location}** và tìm thấy khoáng sản trị giá **$${finalEarned.toLocaleString()}**!${multiplierMessage}`,
             )
                 .addFields({
-                    name: "💵 New Cash Balance",
+                    name: "💵 Số dư tiền mặt mới",
                     value: `$${userData.wallet.toLocaleString()}`,
                     inline: true,
                 })
-                .setFooter({ text: `Next mine available in 1 hour.` });
+                .setFooter({ text: `Khai thác tiếp theo có sẵn sau 1 giờ.` });
 
             await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
     }, { command: 'mine' })
