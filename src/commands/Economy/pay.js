@@ -10,17 +10,17 @@ import EconomyService from '../../services/economyService.js';
 export default {
     data: new SlashCommandBuilder()
         .setName('pay')
-        .setDescription('Pay another user some of your cash')
+        .setDescription('Trả tiền cho một người dùng khác')
         .addUserOption(option =>
             option
                 .setName('user')
-                .setDescription('User to pay')
+                .setDescription('Người dùng cần trả tiền')
                 .setRequired(true)
         )
         .addIntegerOption(option =>
             option
                 .setName('amount')
-                .setDescription('Amount to pay')
+                .setDescription('Số tiền cần trả')
                 .setRequired(true)
                 .setMinValue(1)
         ),
@@ -43,27 +43,27 @@ export default {
 
             if (receiver.bot) {
                 throw createError(
-                    "Cannot pay bot",
+                    "Không thể trả tiền cho bot",
                     ErrorTypes.VALIDATION,
-                    "You cannot pay a bot.",
+                    "Bạn không thể trả tiền cho bot.",
                     { receiverId: receiver.id, isBot: true }
                 );
             }
             
             if (receiver.id === senderId) {
                 throw createError(
-                    "Cannot pay self",
+                    "Không thể tự trả tiền cho mình",
                     ErrorTypes.VALIDATION,
-                    "You cannot pay yourself.",
+                    "Bạn không thể tự trả tiền cho mình.",
                     { senderId, receiverId: receiver.id }
                 );
             }
             
             if (amount <= 0) {
                 throw createError(
-                    "Invalid payment amount",
+                    "Số tiền thanh toán không hợp lệ",
                     ErrorTypes.VALIDATION,
-                    "Amount must be greater than zero.",
+                    "Số tiền phải lớn hơn 0.",
                     { amount, senderId }
                 );
             }
@@ -75,18 +75,18 @@ export default {
 
             if (!senderData) {
                 throw createError(
-                    "Failed to load sender economy data",
+                    "Không thể tải dữ liệu kinh tế của người gửi",
                     ErrorTypes.DATABASE,
-                    "Failed to load your economy data. Please try again later.",
+                    "Không thể tải dữ liệu kinh tế của bạn. Vui lòng thử lại sau.",
                     { userId: senderId, guildId }
                 );
             }
             
             if (!receiverData) {
                 throw createError(
-                    "Failed to load receiver economy data",
+                    "Không thể tải dữ liệu kinh tế của người nhận",
                     ErrorTypes.DATABASE,
-                    "Failed to load the receiver's economy data. Please try again later.",
+                    "Không thể tải dữ liệu kinh tế của người nhận. Vui lòng thử lại sau.",
                     { userId: receiver.id, guildId }
                 );
             }
@@ -106,23 +106,23 @@ export default {
             const updatedReceiverData = await getEconomyData(client, guildId, receiver.id);
 
             const embed = MessageTemplates.SUCCESS.DATA_UPDATED(
-                "payment",
-                `You successfully paid **${receiver.username}** the amount of **$${amount.toLocaleString()}**!`
+                "thanh toán",
+                `Bạn đã trả thành công cho **${receiver.username}** số tiền **$${amount.toLocaleString()}**!`
             )
                 .addFields(
                     {
-                        name: "💳 Payment Amount",
+                        name: "💳 Số tiền thanh toán",
                         value: `$${amount.toLocaleString()}`,
                         inline: true,
                     },
                     {
-                        name: "💵 Your New Balance",
+                        name: "💵 Số dư mới của bạn",
                         value: `$${updatedSenderData.wallet.toLocaleString()}`,
                         inline: true,
                     },
                 )
                 .setFooter({
-                    text: `Paid to ${receiver.tag}`,
+                    text: `Đã trả cho ${receiver.tag}`,
                     iconURL: receiver.displayAvatarURL(),
                 });
 
@@ -138,10 +138,10 @@ export default {
 
             try {
                 const receiverEmbed = createEmbed({ 
-                    title: "💰 Incoming Payment!", 
-                    description: `${interaction.user.username} paid you **$${amount.toLocaleString()}**.` 
+                    title: "💰 Thanh toán đến!", 
+                    description: `${interaction.user.username} đã trả cho bạn **$${amount.toLocaleString()}**.` 
                 }).addFields({
-                    name: "Your New Cash",
+                    name: "Tiền mặt mới của bạn",
                     value: `$${updatedReceiverData.wallet.toLocaleString()}`,
                     inline: true,
                 });
