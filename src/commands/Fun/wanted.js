@@ -8,17 +8,17 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
     data: new SlashCommandBuilder()
     .setName("wanted")
-    .setDescription("Create a WANTED poster for a user.")
+    .setDescription("Tạo một poster TRUY NÃ cho một người dùng.")
     .addUserOption((option) =>
       option
         .setName("user")
-        .setDescription("The user who is wanted.")
+        .setDescription("Người dùng bị truy nã.")
         .setRequired(true),
     )
     .addStringOption((option) =>
       option
         .setName("crime")
-        .setDescription("The crime they committed.")
+        .setDescription("Tội mà họ đã phạm.")
         .setRequired(false)
         .setMaxLength(100),
     ),
@@ -32,7 +32,7 @@ export default {
       const crimeRaw = interaction.options.getString("crime");
 
       
-      let crime = "Too adorable for this server.";
+      let crime = "Dễ thương quá mức cho máy chủ này.";
       if (crimeRaw) {
         const sanitizedCrime = sanitizeInput(crimeRaw.trim(), 100);
         if (sanitizedCrime.length > 0) {
@@ -43,9 +43,9 @@ export default {
       
       if (!targetUser) {
         throw new TitanBotError(
-          'Target user not found for wanted command',
+          'Không tìm thấy người dùng cho lệnh wanted',
           ErrorTypes.USER_INPUT,
-          'Could not find the specified user.'
+          'Không thể tìm thấy người dùng đã chỉ định.'
         );
       }
 
@@ -56,12 +56,12 @@ export default {
 
       const embed = createEmbed({
         color: 'primary',
-        title: '💥 BIG BOUNTY: WANTED! 💥',
-        description: `**CRIMINAL:** ${targetUser.tag}\n**CRIME:** ${crime}`,
+        title: '💥 GIẢI THƯỞNG LỚN: TRUY NÃ! 💥',
+        description: `**TỘI PHẠM:** ${targetUser.tag}\n**TỘI DANH:** ${crime}`,
         fields: [
           {
-            name: "DEAD OR ALIVE",
-            value: `**BOUNTY:** ${bounty}`,
+            name: "CHẾT HOẶC SỐNG",
+            value: `**GIẢI THƯỞNG:** ${bounty}`,
             inline: false,
           },
         ],
@@ -69,7 +69,7 @@ export default {
           url: targetUser.displayAvatarURL({ size: 1024, extension: 'png' }),
         },
         footer: {
-          text: `Last seen in ${interaction.guild.name}`,
+          text: `Lần cuối xuất hiện tại ${interaction.guild.name}`,
         },
       });
 
