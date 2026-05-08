@@ -25,7 +25,7 @@ const WORK_JOBS = [
 export default {
     data: new SlashCommandBuilder()
         .setName('work')
-        .setDescription('Work to earn some money'),
+        .setDescription('Làm việc để kiếm tiền'),
 
     execute: withErrorHandling(async (interaction, config, client) => {
         const deferred = await InteractionHelper.safeDefer(interaction);
@@ -39,9 +39,9 @@ export default {
 
             if (!userData) {
                 throw createError(
-                    "Failed to load economy data for work",
+                    "Không thể tải dữ liệu kinh tế cho công việc",
                     ErrorTypes.DATABASE,
-                    "Failed to load your economy data. Please try again later.",
+                    "Không thể tải dữ liệu kinh tế của bạn. Vui lòng thử lại sau.",
                     { userId, guildId }
                 );
             }
@@ -63,9 +63,9 @@ export default {
                 } else {
                     const remaining = lastWork + WORK_COOLDOWN - now;
                     throw createError(
-                        "Work cooldown active",
+                        "Thời gian hồi chiêu làm việc đang hoạt động",
                         ErrorTypes.RATE_LIMIT,
-                        `You're working too fast! Wait **${Math.floor(remaining / 3600000)}h ${Math.floor((remaining % 3600000) / 60000)}m** before working again.`,
+                        `Bạn làm việc quá nhanh! Chờ **${Math.floor(remaining / 3600000)}h ${Math.floor((remaining % 3600000) / 60000)}m** trước khi làm việc lại.`,
                         { timeRemaining: remaining, cooldownType: 'work' }
                     );
                 }
@@ -78,7 +78,7 @@ export default {
             let multiplierMessage = "";
             if (hasLaptop > 0) {
                 earned = Math.floor(earned * LAPTOP_MULTIPLIER);
-                multiplierMessage = "\n💻 **Laptop Bonus:** +50% earnings!";
+                multiplierMessage = "\n💻 **Tiền thưởng Laptop:** +50% thu nhập!";
             }
 
             userData.wallet = (userData.wallet || 0) + earned;
@@ -98,23 +98,23 @@ export default {
             });
 
             const embed = successEmbed(
-                "💼 Work Complete!",
-                `You worked as a **${job}** and earned **$${earned.toLocaleString()}**!${multiplierMessage}`
+                "💼 Hoàn thành công việc!",
+                `Bạn đã làm việc như một **${job}** và kiếm được **$${earned.toLocaleString()}**!${multiplierMessage}`
             )
                 .addFields(
                     {
-                        name: "💰 New Balance",
+                        name: "💰 Số dư mới",
                         value: `$${userData.wallet.toLocaleString()}`,
                         inline: true,
                     },
                     {
-                        name: "⏰ Next Work",
+                        name: "⏰ Công việc tiếp theo",
                         value: `<t:${Math.floor((now + WORK_COOLDOWN) / 1000)}:R>`,
                         inline: true,
                     }
                 )
                 .setFooter({
-                    text: `Requested by ${interaction.user.tag}`,
+                    text: `Yêu cầu bởi ${interaction.user.tag}`,
                     iconURL: interaction.user.displayAvatarURL(),
                 });
 
