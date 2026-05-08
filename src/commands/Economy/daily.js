@@ -14,7 +14,7 @@ const PREMIUM_BONUS_PERCENTAGE = 0.1;
 export default {
     data: new SlashCommandBuilder()
         .setName('daily')
-        .setDescription('Claim your daily cash reward'),
+        .setDescription('Nhận phần thưởng tiền mặt hàng ngày của bạn'),
 
     execute: withErrorHandling(async (interaction, config, client) => {
         const deferred = await InteractionHelper.safeDefer(interaction);
@@ -30,9 +30,9 @@ export default {
             
             if (!userData) {
                 throw createError(
-                    "Failed to load economy data for daily",
+                    "Không thể tải dữ liệu kinh tế cho phần thưởng hàng ngày",
                     ErrorTypes.DATABASE,
-                    "Failed to load your economy data. Please try again later.",
+                    "Không thể tải dữ liệu kinh tế của bạn. Vui lòng thử lại sau.",
                     { userId, guildId }
                 );
             }
@@ -42,9 +42,9 @@ export default {
             if (now < lastDaily + DAILY_COOLDOWN) {
                 const timeRemaining = lastDaily + DAILY_COOLDOWN - now;
                 throw createError(
-                    "Daily cooldown active",
+                    "Thời gian hồi chiêu hàng ngày đang hoạt động",
                     ErrorTypes.RATE_LIMIT,
-                    `You need to wait before claiming daily again. Try again in **${formatDuration(timeRemaining)}**.`,
+                    `Bạn cần chờ trước khi nhận phần thưởng hàng ngày lần nữa. Thử lại sau **${formatDuration(timeRemaining)}**.`,
                     { timeRemaining, cooldownType: 'daily' }
                 );
             }
@@ -65,7 +65,7 @@ export default {
                     DAILY_AMOUNT * PREMIUM_BONUS_PERCENTAGE,
                 );
                 earned += bonusAmount;
-                bonusMessage = `\n✨ **Premium Bonus:** +$${bonusAmount.toLocaleString()}`;
+                bonusMessage = `\n✨ **Tiền thưởng Premium:** +$${bonusAmount.toLocaleString()}`;
                 hasPremiumRole = true;
             }
 
@@ -84,18 +84,18 @@ export default {
             });
 
             const embed = successEmbed(
-                "✅ Daily Claimed!",
-                `You have claimed your daily **$${earned.toLocaleString()}**!${bonusMessage}`
+                "✅ Đã nhận phần thưởng hàng ngày!",
+                `Bạn đã nhận phần thưởng hàng ngày **$${earned.toLocaleString()}** của mình!${bonusMessage}`
             )
                 .addFields({
-                    name: "New Cash Balance",
+                    name: "Số dư tiền mặt mới",
                     value: `$${userData.wallet.toLocaleString()}`,
                     inline: true,
                 })
                 .setFooter({
                     text: hasPremiumRole
-                        ? `Next claim in 24 hours. (Premium Active)`
-                        : `Next claim in 24 hours.`,
+                        ? `Lần nhận tiếp theo sau 24 giờ. (Premium đang hoạt động)`
+                        : `Lần nhận tiếp theo sau 24 giờ.`,
                 });
 
             await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
