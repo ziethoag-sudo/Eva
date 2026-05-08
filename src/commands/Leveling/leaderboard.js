@@ -12,7 +12,7 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('leaderboard')
-    .setDescription("Shows the server's level leaderboard")
+    .setDescription("Hiển thị bảng xếp hạng cấp độ của máy chủ")
     .setDMPermission(false),
   category: 'Leveling',
 
@@ -33,7 +33,7 @@ export default {
           embeds: [
             new EmbedBuilder()
               .setColor('#f1c40f')
-              .setDescription('The leveling system is currently disabled on this server.')
+              .setDescription('Hệ thống cấp độ hiện đang bị tắt trên máy chủ này.')
           ],
           flags: MessageFlags.Ephemeral
         });
@@ -44,16 +44,16 @@ export default {
 
       if (leaderboard.length === 0) {
         throw new TitanBotError(
-          'No leaderboard data found',
+          'Không tìm thấy dữ liệu bảng xếp hạng',
           ErrorTypes.DATABASE,
-          'No level data found yet. Start chatting to gain XP!'
+          'Chưa có dữ liệu cấp độ. Bắt đầu trò chuyện để nhận XP!'
         );
       }
 
       const embed = new EmbedBuilder()
-        .setTitle('🏆 Level Leaderboard')
+        .setTitle('🏆 Bảng Xếp Hạng Cấp Độ')
         .setColor('#2ecc71')
-        .setDescription("Top 10 most active members in this server:")
+        .setDescription("Top 10 thành viên hoạt động nhất trên máy chủ này:")
         .setTimestamp();
 
       const leaderboardText = await Promise.all(
@@ -69,15 +69,15 @@ export default {
             else if (index === 2) rankPrefix = '🥉';
             else rankPrefix = `**${index + 1}.**`;
 
-            return `${rankPrefix} ${userMention} - Level ${user.level} (${user.xp}/${xpForNextLevel} XP)`;
+            return `${rankPrefix} ${userMention} - Cấp ${user.level} (${user.xp}/${xpForNextLevel} XP)`;
           } catch {
-            return `**${index + 1}.** Error loading user ${user.userId}`;
+            return `**${index + 1}.** Lỗi tải người dùng ${user.userId}`;
           }
         })
       );
 
       embed.addFields({
-        name: 'Rankings',
+        name: 'Xếp Hạng',
         value: leaderboardText.join('\n')
       });
 
