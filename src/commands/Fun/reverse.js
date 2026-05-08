@@ -8,11 +8,11 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
     data: new SlashCommandBuilder()
     .setName("reverse")
-    .setDescription("Writes your text backwards.")
+    .setDescription("Viết ngược văn bản của bạn.")
     .addStringOption((option) =>
       option
         .setName("text")
-        .setDescription("The text to reverse.")
+        .setDescription("Văn bản để đảo.")
         .setRequired(true)
         .setMaxLength(1000),
     ),
@@ -25,9 +25,9 @@ export default {
       
       if (!originalText || originalText.trim().length === 0) {
         throw new TitanBotError(
-          'Empty text provided to reverse command',
+          'Không có văn bản hợp lệ cho lệnh reverse',
           ErrorTypes.USER_INPUT,
-          'Please provide some text to reverse!'
+          'Vui lòng cung cấp văn bản để đảo!'
         );
       }
 
@@ -36,8 +36,8 @@ export default {
       const reversedText = sanitizedText.split("").reverse().join("");
 
       const embed = successEmbed(
-        "Backwards Text",
-        `Original: **${sanitizedText}**\nReversed: **${reversedText}**`,
+        "Văn bản ngược",
+        `Bản gốc: **${sanitizedText}**\nĐã đảo: **${reversedText}**`,
       );
 
       await InteractionHelper.safeReply(interaction, { embeds: [embed] });
