@@ -10,8 +10,8 @@ export default {
         try {
             await InteractionHelper.safeDefer(interaction);
 
-            const month = interaction.options.getInteger("month");
-            const day = interaction.options.getInteger("day");
+            const month = interaction.options.getInteger("thang");
+            const day = interaction.options.getInteger("ngay");
             const userId = interaction.user.id;
             const guildId = interaction.guildId;
 
@@ -20,20 +20,20 @@ export default {
             
             await InteractionHelper.safeEditReply(interaction, {
                 embeds: [successEmbed(
-                    `Your birthday has been set to **${result.data.monthName} ${result.data.day}**!`,
-                    "Birthday Set! 🎂"
+                    `Sinh nhật của bạn đã được thiết lập thành **${result.data.monthName} ${result.data.day}**!`,
+                    "Đã thiết lập sinh nhật! 🎂"
                 )]
             });
         } catch (error) {
-            logger.error("Birthday set command execution failed", {
+            logger.error("Lỗi thực thi lệnh thiết lập sinh nhật", {
                 error: error.message,
                 stack: error.stack,
                 userId: interaction.user.id,
                 guildId: interaction.guildId,
-                commandName: 'birthday_set'
+                commandName: 'sinhnhat_thietlap'
             });
             await handleInteractionError(interaction, error, {
-                commandName: 'birthday_set',
+                commandName: 'sinhnhat_thietlap',
                 source: 'birthday_set_module'
             });
         }
