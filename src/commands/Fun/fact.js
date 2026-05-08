@@ -16,14 +16,14 @@ const facts = [
 export default {
     data: new SlashCommandBuilder()
     .setName("fact")
-    .setDescription("Shares a random, interesting fact."),
+    .setDescription("Chia sẻ một sự thật thú vị ngẫu nhiên."),
   category: 'Fun',
 
   async execute(interaction, config, client) {
     try {
       const randomFact = facts[Math.floor(Math.random() * facts.length)];
 
-      const embed = successEmbed("🧠 Did You Know?", `💡 **${randomFact}**`);
+      const embed = successEmbed("🧠 Bạn có biết?", `💡 **${randomFact}**`);
 
       await InteractionHelper.safeReply(interaction, { embeds: [embed] });
       logger.debug(`Fact command executed by user ${interaction.user.id} in guild ${interaction.guildId}`);
