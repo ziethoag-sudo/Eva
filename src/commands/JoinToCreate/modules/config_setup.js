@@ -33,57 +33,57 @@ export default {
             throw new TitanBotError(
                 `Channel ${triggerChannel.id} is not a Join to Create trigger`,
                 ErrorTypes.VALIDATION,
-                `${triggerChannel} is not configured as a Join to Create trigger channel.`
+                `${triggerChannel} không được cấu hình là kênh kích hoạt Tham gia để Tạo.`
             );
         }
 
         const embed = new EmbedBuilder()
-            .setTitle('⚙️ Join to Create Configuration')
-            .setDescription(`Configure settings for ${triggerChannel}`)
+            .setTitle('⚙️ Cấu hình Tham gia để Tạo')
+            .setDescription(`Cấu hình cài đặt cho ${triggerChannel}`)
             .setColor(getColor('info'))
             .addFields(
                 {
-                    name: '📝 Current Channel Name Template',
+                    name: '📝 Mẫu tên kênh hiện tại',
                     value: `\`${currentConfig.channelOptions?.[triggerChannel.id]?.nameTemplate || currentConfig.channelNameTemplate}\``,
                     inline: false
                 },
                 {
-                    name: '👥 Current User Limit',
-                    value: `${currentConfig.channelOptions?.[triggerChannel.id]?.userLimit || currentConfig.userLimit === 0 ? 'No limit' : currentConfig.userLimit + ' users'}`,
+                    name: '👥 Giới hạn người dùng hiện tại',
+                    value: `${currentConfig.channelOptions?.[triggerChannel.id]?.userLimit || currentConfig.userLimit === 0 ? 'Không giới hạn' : currentConfig.userLimit + ' người'}`,
                     inline: true
                 },
                 {
-                    name: '🎵 Current Bitrate',
+                    name: '🎵 Bitrate hiện tại',
                     value: `${(currentConfig.channelOptions?.[triggerChannel.id]?.bitrate || currentConfig.bitrate) / 1000} kbps`,
                     inline: true
                 }
             )
-            .setFooter({ text: 'Select an option to configure below' })
+            .setFooter({ text: 'Chọn một tùy chọn để cấu hình bên dưới' })
             .setTimestamp();
 
         const selectMenu = new StringSelectMenuBuilder()
             .setCustomId(`jointocreate_config_${triggerChannel.id}`)
-            .setPlaceholder('Select a configuration option')
+            .setPlaceholder('Chọn một tùy chọn cấu hình')
             .addOptions(
                 new StringSelectMenuOptionBuilder()
-                    .setLabel('Change Channel Name Template')
-                    .setDescription('Modify the template for temporary channel names')
+                    .setLabel('Thay đổi mẫu tên kênh')
+                    .setDescription('Chỉnh sửa mẫu cho tên kênh tạm thời')
                     .setValue('name_template'),
                 new StringSelectMenuOptionBuilder()
-                    .setLabel('Change User Limit')
-                    .setDescription('Set maximum users per temporary channel')
+                    .setLabel('Thay đổi giới hạn người dùng')
+                    .setDescription('Đặt số người dùng tối đa mỗi kênh tạm thời')
                     .setValue('user_limit'),
                 new StringSelectMenuOptionBuilder()
-                    .setLabel('Change Bitrate')
-                    .setDescription('Adjust audio quality for temporary channels')
+                    .setLabel('Thay đổi Bitrate')
+                    .setDescription('Điều chỉnh chất lượng âm thanh cho kênh tạm thời')
                     .setValue('bitrate'),
                 new StringSelectMenuOptionBuilder()
-                    .setLabel('Remove This Trigger Channel')
-                    .setDescription('Remove this channel from the Join to Create system')
+                    .setLabel('Xóa kênh kích hoạt này')
+                    .setDescription('Xóa kênh này khỏi hệ thống Tham gia để Tạo')
                     .setValue('remove_trigger'),
                 new StringSelectMenuOptionBuilder()
-                    .setLabel('View Current Settings')
-                    .setDescription('Show all current configuration details')
+                    .setLabel('Xem cài đặt hiện tại')
+                    .setDescription('Hiển thị tất cả chi tiết cấu hình hiện tại')
                     .setValue('view_settings')
             );
 
