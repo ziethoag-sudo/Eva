@@ -14,17 +14,17 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('levelremove')
-    .setDescription('Remove levels from a user')
+    .setDescription('Xóa cấp từ người dùng')
     .addUserOption((option) =>
       option
         .setName('user')
-        .setDescription('The user to remove levels from')
+        .setDescription('Người dùng để xóa cấp')
         .setRequired(true)
     )
     .addIntegerOption((option) =>
       option
         .setName('levels')
-        .setDescription('Number of levels to remove')
+        .setDescription('Số cấp để xóa')
         .setRequired(true)
         .setMinValue(1)
     )
@@ -46,7 +46,7 @@ export default {
       const hasPermission = await checkUserPermissions(
         interaction,
         PermissionFlagsBits.ManageGuild,
-        'You need ManageGuild permission to use this command.'
+        'Bạn cần quyền ManageGuild để sử dụng lệnh này.'
       );
       if (!hasPermission) return;
 
@@ -56,7 +56,7 @@ export default {
           embeds: [
             new EmbedBuilder()
               .setColor('#f1c40f')
-              .setDescription('The leveling system is currently disabled on this server.')
+              .setDescription('Hệ thống cấp độ hiện đang bị tắt trên máy chủ này.')
           ],
           flags: MessageFlags.Ephemeral
         });
@@ -70,9 +70,9 @@ export default {
       const member = await interaction.guild.members.fetch(targetUser.id).catch(() => null);
       if (!member) {
         throw new TitanBotError(
-          `User ${targetUser.id} not found in this guild`,
+          `Người dùng ${targetUser.id} không tìm thấy trong máy chủ này`,
           ErrorTypes.USER_INPUT,
-          'The specified user is not in this server.'
+          'Người dùng được chỉ định không có trong máy chủ này.'
         );
       }
 
@@ -80,9 +80,9 @@ export default {
       const userData = await getUserLevelData(client, interaction.guildId, targetUser.id);
       if (userData.level === 0) {
         throw new TitanBotError(
-          `User ${targetUser.id} is already at minimum level`,
+          `Người dùng ${targetUser.id} đã ở cấp tối thiểu`,
           ErrorTypes.VALIDATION,
-          `${targetUser.tag} is already at level 0 and cannot have levels removed.`
+          `${targetUser.tag} đã ở cấp 0 và không thể xóa cấp.`
         );
       }
 
@@ -92,8 +92,8 @@ export default {
       await InteractionHelper.safeEditReply(interaction, {
         embeds: [
           createEmbed({
-            title: '✅ Levels Removed',
-            description: `Successfully removed ${levelsToRemove} levels from ${targetUser.tag}.\n**New Level:** ${updatedData.level}`,
+            title: '✅ Đã Xóa Cấp',
+            description: `Đã xóa thành công ${levelsToRemove} cấp từ ${targetUser.tag}.\n**Cấp Mới:** ${updatedData.level}`,
             color: 'success'
           })
         ]
