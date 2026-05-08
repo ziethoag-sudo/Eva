@@ -13,24 +13,24 @@ import birthdaySetchannel from './modules/birthday_setchannel.js';
 import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
     data: new SlashCommandBuilder()
-        .setName('birthday')
-        .setDescription('Birthday system commands')
+        .setName('sinhnhat')
+        .setDescription('Lệnh hệ thống sinh nhật')
         .addSubcommand(subcommand =>
             subcommand
-                .setName('set')
-                .setDescription('Set your birthday')
+                .setName('thietlap')
+                .setDescription('Thiết lập sinh nhật của bạn')
                 .addIntegerOption(option =>
                     option
-                        .setName('month')
-                        .setDescription('Birth month (1-12)')
+                        .setName('thang')
+                        .setDescription('Tháng sinh (1-12)')
                         .setRequired(true)
                         .setMinValue(1)
                         .setMaxValue(12)
                 )
                 .addIntegerOption(option =>
                     option
-                        .setName('day')
-                        .setDescription('Birth day (1-31)')
+                        .setName('ngay')
+                        .setDescription('Ngày sinh (1-31)')
                         .setRequired(true)
                         .setMinValue(1)
                         .setMaxValue(31)
@@ -38,38 +38,38 @@ export default {
         )
         .addSubcommand(subcommand =>
             subcommand
-                .setName('info')
-                .setDescription('View birthday information')
+                .setName('thongtin')
+                .setDescription('Xem thông tin sinh nhật')
                 .addUserOption(option =>
                     option
-                        .setName('user')
-                        .setDescription('User to check birthday for')
+                        .setName('nguoi')
+                        .setDescription('Người dùng cần kiểm tra sinh nhật')
                         .setRequired(false)
                 )
         )
         .addSubcommand(subcommand =>
             subcommand
-                .setName('list')
-                .setDescription('List all birthdays in the server')
+                .setName('danhsach')
+                .setDescription('Liệt kê tất cả sinh nhật trong máy chủ')
         )
         .addSubcommand(subcommand =>
             subcommand
-                .setName('remove')
-                .setDescription('Remove your birthday')
+                .setName('xoa')
+                .setDescription('Xóa sinh nhật của bạn')
         )
         .addSubcommand(subcommand =>
             subcommand
-                .setName('next')
-                .setDescription('Show upcoming birthdays')
+                .setName('sapto')
+                .setDescription('Hiển thị sinh nhật sắp tới')
         )
         .addSubcommand(subcommand =>
             subcommand
-                .setName('setchannel')
-                .setDescription('Set or disable the channel for birthday announcements. (Manage Server required)')
+                .setName('datkenh')
+                .setDescription('Đặt hoặc tắt kênh thông báo sinh nhật. (Yêu cầu Quản lý máy chủ)')
                 .addChannelOption(option =>
                     option
-                        .setName('channel')
-                        .setDescription('The text channel for announcements. Leave empty to disable.')
+                        .setName('kenh')
+                        .setDescription('Kênh văn bản để thông báo. Để trống để tắt.')
                         .addChannelTypes(ChannelType.GuildText)
                         .setRequired(false)
                 )
@@ -80,21 +80,21 @@ export default {
             const subcommand = interaction.options.getSubcommand();
             
             switch (subcommand) {
-                case 'set':
+                case 'thietlap':
                     return await birthdaySet.execute(interaction, config, client);
-                case 'info':
+                case 'thongtin':
                     return await birthdayInfo.execute(interaction, config, client);
-                case 'list':
+                case 'danhsach':
                     return await birthdayList.execute(interaction, config, client);
-                case 'remove':
+                case 'xoa':
                     return await birthdayRemove.execute(interaction, config, client);
-                case 'next':
+                case 'sapto':
                     return await nextBirthdays.execute(interaction, config, client);
-                case 'setchannel':
+                case 'datkenh':
                     return await birthdaySetchannel.execute(interaction, config, client);
                 default:
                     return InteractionHelper.safeReply(interaction, {
-                        embeds: [errorEmbed('Error', 'Unknown subcommand')],
+                        embeds: [errorEmbed('Lỗi', 'Lệnh con không xác định')],
                         flags: MessageFlags.Ephemeral
                     });
             }
@@ -104,11 +104,11 @@ export default {
                 stack: error.stack,
                 userId: interaction.user.id,
                 guildId: interaction.guildId,
-                commandName: 'birthday',
+                commandName: 'sinhnhat',
                 subcommand: interaction.options.getSubcommand()
             });
             await handleInteractionError(interaction, error, {
-                commandName: 'birthday',
+                commandName: 'sinhnhat',
                 source: 'birthday_command'
             });
         }
