@@ -36,14 +36,14 @@ export default {
             });
 
             const embed = successEmbed(
-                `Created trigger channel: ${triggerChannel}\n\n` +
-                `**Settings:**\n` +
-                `• Temporary Channel Name Template: \`${nameTemplate}\`\n` +
-                `• User Limit: ${userLimit === 0 ? 'No limit' : userLimit + ' users'}\n` +
+                `Đã tạo kênh kích hoạt: ${triggerChannel}\n\n` +
+                `**Cài đặt:**\n` +
+                `• Mẫu tên kênh tạm thời: \`${nameTemplate}\`\n` +
+                `• Giới hạn người dùng: ${userLimit === 0 ? 'Không giới hạn' : userLimit + ' người'}\n` +
                 `• Bitrate: ${bitrate} kbps\n` +
-                `${category ? `• Category: ${category.name}` : '• Category: None (root level)'}\n\n` +
-                `When users join this channel, a temporary voice channel will be created for them.`,
-                '✅ Join to Create Setup Complete'
+                `${category ? `• Danh mục: ${category.name}` : '• Danh mục: Không có (cấp gốc)'}\n\n` +
+                `Khi người dùng tham gia kênh này, một kênh thoại tạm thời sẽ được tạo cho họ.`,
+                '✅ Thiết lập Tham gia để Tạo hoàn tất'
             );
 
             try {
@@ -71,7 +71,7 @@ export default {
             throw new TitanBotError(
                 `Setup failed: ${error.message}`,
                 ErrorTypes.DISCORD_API,
-                'Failed to set up Join to Create system.'
+                'Không thể thiết lập hệ thống Tham gia để Tạo.'
             );
         }
     }
