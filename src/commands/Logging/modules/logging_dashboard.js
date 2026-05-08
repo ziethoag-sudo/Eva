@@ -36,9 +36,9 @@ function getCategoryStatus(enabledEvents, category, auditEnabled) {
 }
 
 async function formatChannelMention(guild, id) {
-    if (!id) return '`Not configured`';
+    if (!id) return '`Chưa cấu hình`';
     const channel = guild.channels.cache.get(id) ?? await guild.channels.fetch(id).catch(() => null);
-    return channel ? channel.toString() : `⚠️ Missing (${id})`;
+    return channel ? channel.toString() : `⚠️ Thiếu (${id})`;
 }
 
 export async function buildLoggingDashboardView(interaction, client) {
@@ -62,13 +62,13 @@ export async function buildLoggingDashboardView(interaction, client) {
     }).join('\n');
 
     const embed = new EmbedBuilder()
-        .setTitle('📋 Logging Dashboard')
-        .setDescription(`Manage audit logging for **${interaction.guild.name}**. Category buttons toggle logging instantly.`)
+        .setTitle('📋 Bảng Điều Khiển Ghi Nhật Ký')
+        .setDescription(`Quản lý ghi nhật ký kiểm tra cho **${interaction.guild.name}**. Các nút danh mục chuyển đổi ghi nhật ký ngay lập tức.`)
         .setColor(auditEnabled ? getColor('success') : getColor('warning'))
         .addFields(
             {
-                name: '🧾 Audit Logging',
-                value: auditEnabled ? '✅ Enabled' : '❌ Disabled',
+                name: '🧾 Ghi Nhật Ký Kiểm Tra',
+                value: auditEnabled ? '✅ Được Bật' : '❌ Được Tắt',
                 inline: true,
             },
             {
@@ -82,31 +82,31 @@ export async function buildLoggingDashboardView(interaction, client) {
                 inline: true,
             },
             {
-                name: '📡 Log Channels',
+                name: '📡 Kênh Nhật Ký',
                 value: [
-                    `**Audit:** ${auditChannel}`,
-                    `**Ticket Logs:** ${lifecycleChannel}`,
-                    `**Ticket Transcripts:** ${transcriptChannel}`,
+                    `**Kiểm tra:** ${auditChannel}`,
+                    `**Nhật ký Ticket:** ${lifecycleChannel}`,
+                    `**Bản ghi Ticket:** ${transcriptChannel}`,
                 ].join('\n'),
                 inline: false,
             },
             {
-                name: '📋 Event Categories',
+                name: '📋 Danh Mục Sự Kiện',
                 value: categoryLines,
                 inline: false,
             },
             {
-                name: '🧹 Ignore Filters',
-                value: `Users: **${ignoredUsers.length}**\nChannels: **${ignoredChannels.length}**`,
+                name: '🧹 Bộ Lọc Bỏ Qua',
+                value: `Người dùng: **${ignoredUsers.length}**\nKênh: **${ignoredChannels.length}**`,
                 inline: true,
             },
             {
-                name: '🕒 Last Refresh',
+                name: '🕒 Làm mới lần cuối',
                 value: `<t:${Math.floor(Date.now() / 1000)}:R>`,
                 inline: true,
             },
         )
-        .setFooter({ text: 'Use /logging setchannel to configure the audit channel  •  /ticket setup or /ticket dashboard to configure ticket channels' })
+        .setFooter({ text: 'Sử dụng /logging setchannel để cấu hình kênh kiểm tra • /ticket setup hoặc /ticket dashboard để cấu hình kênh ticket' })
         .setTimestamp();
 
     const components = createLoggingDashboardComponents(loggingStatus.enabledEvents, auditEnabled);
@@ -118,7 +118,7 @@ export default {
         try {
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageGuild)) {
                 return InteractionHelper.safeReply(interaction, {
-                    embeds: [errorEmbed('Permission Denied', 'You need **Manage Server** permissions to view the logging dashboard.')],
+                    embeds: [errorEmbed('Quyền bị từ chối', 'Bạn cần quyền **Quản lý máy chủ** để xem bảng điều khiển ghi nhật ký.')],
                 });
             }
 
@@ -128,7 +128,7 @@ export default {
         } catch (error) {
             logger.error('logging_dashboard error:', error);
             await InteractionHelper.safeEditReply(interaction, {
-                embeds: [errorEmbed('Dashboard Error', 'Failed to load the logging dashboard.')],
+                embeds: [errorEmbed('Lỗi Bảng Điều Khiển', 'Không thể tải bảng điều khiển ghi nhật ký.')],
             });
         }
     },
