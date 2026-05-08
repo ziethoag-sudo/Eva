@@ -11,24 +11,24 @@ import levelDashboard from './modules/level_dashboard.js';
 export default {
     data: new SlashCommandBuilder()
         .setName('level')
-        .setDescription('Manage the leveling system')
+        .setDescription('Quản lý hệ thống cấp độ')
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
         .setDMPermission(false)
         .addSubcommand((subcommand) =>
             subcommand
                 .setName('setup')
-                .setDescription('Set up the leveling system — this also enables it')
+                .setDescription('Thiết lập hệ thống cấp độ — điều này cũng kích hoạt nó')
                 .addChannelOption((option) =>
                     option
                         .setName('channel')
-                        .setDescription('Channel to send level-up notifications in')
+                        .setDescription('Kênh để gửi thông báo lên cấp')
                         .addChannelTypes(ChannelType.GuildText)
                         .setRequired(true),
                 )
                 .addIntegerOption((option) =>
                     option
                         .setName('xp_min')
-                        .setDescription('Minimum XP awarded per message (default: 15)')
+                        .setDescription('XP tối thiểu được trao cho mỗi tin nhắn (mặc định: 15)')
                         .setMinValue(1)
                         .setMaxValue(500)
                         .setRequired(false),
@@ -36,7 +36,7 @@ export default {
                 .addIntegerOption((option) =>
                     option
                         .setName('xp_max')
-                        .setDescription('Maximum XP awarded per message (default: 25)')
+                        .setDescription('XP tối đa được trao cho mỗi tin nhắn (mặc định: 25)')
                         .setMinValue(1)
                         .setMaxValue(500)
                         .setRequired(false),
@@ -45,7 +45,7 @@ export default {
                     option
                         .setName('message')
                         .setDescription(
-                            'Level-up message. Use {user} and {level} as placeholders (default provided)',
+                            'Tin nhắn lên cấp. Sử dụng {user} và {level} làm chỗ giữ chỗ (mặc định được cung cấp)',
                         )
                         .setMaxLength(500)
                         .setRequired(false),
@@ -53,7 +53,7 @@ export default {
                 .addIntegerOption((option) =>
                     option
                         .setName('xp_cooldown')
-                        .setDescription('Seconds between XP grants per user (default: 60)')
+                        .setDescription('Giây giữa các lần trao XP cho mỗi người dùng (mặc định: 60)')
                         .setMinValue(0)
                         .setMaxValue(3600)
                         .setRequired(false),
@@ -62,7 +62,7 @@ export default {
         .addSubcommand((subcommand) =>
             subcommand
                 .setName('dashboard')
-                .setDescription('Open the interactive leveling configuration dashboard'),
+                .setDescription('Mở bảng điều khiển cấu hình cấp độ tương tác'),
         ),
     category: 'Leveling',
 
@@ -77,8 +77,8 @@ export default {
                 return await InteractionHelper.safeEditReply(interaction, {
                     embeds: [
                         errorEmbed(
-                            'Missing Permissions',
-                            'You need the **Manage Server** permission to use this command.',
+                            'Thiếu Quyền',
+                            'Bạn cần quyền **Quản lý Máy chủ** để sử dụng lệnh này.',
                         ),
                     ],
                 });
@@ -96,15 +96,15 @@ export default {
                 const xpMax = interaction.options.getInteger('xp_max') ?? 25;
                 const message =
                     interaction.options.getString('message') ??
-                    '{user} has leveled up to level {level}!';
+                    '{user} đã lên cấp {level}!';
                 const xpCooldown = interaction.options.getInteger('xp_cooldown') ?? 60;
 
                 if (xpMin > xpMax) {
                     return await InteractionHelper.safeEditReply(interaction, {
                         embeds: [
                             errorEmbed(
-                                'Invalid XP Range',
-                                `Minimum XP (**${xpMin}**) cannot be greater than maximum XP (**${xpMax}**).`,
+                                'Phạm vi XP không hợp lệ',
+                                `XP tối thiểu (**${xpMin}**) không thể lớn hơn XP tối đa (**${xpMax}**).`,
                             ),
                         ],
                     });
@@ -112,9 +112,9 @@ export default {
 
                 if (!botHasPermission(channel, ['SendMessages', 'EmbedLinks'])) {
                     throw new TitanBotError(
-                        'Bot missing permissions in the specified channel',
+                        'Bot thiếu quyền trong kênh được chỉ định',
                         ErrorTypes.PERMISSION,
-                        `I need **SendMessages** and **EmbedLinks** permissions in ${channel} to send level-up notifications.`,
+                        `Tôi cần quyền **Gửi Tin nhắn** và **Liên kết Nhúng** trong ${channel} để gửi thông báo lên cấp.`,
                     );
                 }
 
@@ -124,8 +124,8 @@ export default {
                     return await InteractionHelper.safeEditReply(interaction, {
                         embeds: [
                             errorEmbed(
-                                'Leveling System Already Active',
-                                `The leveling system is already set up on this server (level-up notifications go to <#${existingConfig.levelUpChannel}>).\n\nUse \`/level dashboard\` to adjust any settings.`,
+                                'Hệ thống Cấp độ Đã Hoạt động',
+                                `Hệ thống cấp độ đã được thiết lập trên máy chủ này (thông báo lên cấp được gửi đến <#${existingConfig.levelUpChannel}>).\n\nSử dụng \`/level dashboard\` để điều chỉnh bất kỳ cài đặt nào.`,
                             ),
                         ],
                     });
@@ -155,14 +155,14 @@ export default {
                 return await InteractionHelper.safeEditReply(interaction, {
                     embeds: [
                         createEmbed({
-                            title: '✅ Leveling System Set Up',
+                            title: '✅ Hệ thống Cấp độ Đã Thiết lập',
                             description:
-                                `The leveling system is now **enabled** and ready to go.\n\n` +
-                                `**Level-up Channel:** ${channel}\n` +
-                                `**XP per Message:** ${xpMin} – ${xpMax}\n` +
-                                `**XP Cooldown:** ${xpCooldown}s\n` +
-                                `**Level-up Message:** \`${message}\`\n\n` +
-                                `Use \`/level dashboard\` to adjust any of these settings at any time.`,
+                                `Hệ thống cấp độ hiện đã **được kích hoạt** và sẵn sàng.\n\n` +
+                                `**Kênh Lên cấp:** ${channel}\n` +
+                                `**XP mỗi Tin nhắn:** ${xpMin} – ${xpMax}\n` +
+                                `**Thời gian Chờ XP:** ${xpCooldown}s\n` +
+                                `**Tin nhắn Lên cấp:** \`${message}\`\n\n` +
+                                `Sử dụng \`/level dashboard\` để điều chỉnh bất kỳ cài đặt nào bất cứ lúc nào.`,
                             color: 'success',
                         }),
                     ],
