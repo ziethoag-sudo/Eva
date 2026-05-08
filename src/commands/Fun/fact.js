@@ -5,12 +5,12 @@ import { handleInteractionError, TitanBotError, ErrorTypes } from '../../utils/e
 
 import { InteractionHelper } from '../../utils/interactionHelper.js';
 const facts = [
-  "A day on Venus is longer than a year on Venus.",
-  "The shortest war in history was between Britain and Zanzibar on August 27, 1896. It lasted 38 to 45 minutes.",
-  "The word 'Strengths' is the longest word in the English language with only one vowel.",
-  "Octopuses have three hearts and blue blood.",
-  "There are more trees on Earth than stars in the Milky Way galaxy.",
-  "The total weight of all the ants on Earth is thought to be about the same as the total weight of all humans.",
+  "Bạn có biết? Pháo là Owner lười nhất server.",
+  "bạn có biết? Số bot còn nhiều hơn Member.",
+  "Fact: Gok ngầu nhất Server.",
+  "Bạn có biết? Bot này được tạo bởi Gok chỉ trong vòng 1 tuần.",
+  "Bạn có biết? Bot này có trên 10 Server khi mới tạo ra.",
+  "Fact: trả nợ cho tao PHÁO!!!!",
 ];
 
 export default {
