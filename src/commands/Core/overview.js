@@ -10,25 +10,25 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 import { logger } from '../../utils/logger.js';
 
 function pill(enabled) {
-    return enabled ? '✅ On' : '❌ Off';
+    return enabled ? '✅ Bật' : '❌ Tắt';
 }
 
 async function formatChannelMention(guild, id) {
-    if (!id) return '`Not configured`';
+    if (!id) return '`Chưa cấu hình`';
     const channel = guild.channels.cache.get(id) ?? await guild.channels.fetch(id).catch(() => null);
-    return channel ? channel.toString() : `⚠️ Missing (${id})`;
+    return channel ? channel.toString() : `⚠️ Thiếu (${id})`;
 }
 
 function formatRoleMention(guild, id) {
-    if (!id) return '`Not configured`';
+    if (!id) return '`Chưa cấu hình`';
     const role = guild.roles.cache.get(id);
-    return role ? role.toString() : `⚠️ Missing (${id})`;
+    return role ? role.toString() : `⚠️ Thiếu (${id})`;
 }
 
 export default {
     data: new SlashCommandBuilder()
-        .setName('overview')
-        .setDescription('Read-only snapshot of all server system statuses.')
+        .setName('Tổng quan')
+        .setDescription('Ảnh chụp nhanh chỉ đọc của tất cả trạng thái hệ thống máy chủ.')
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
         .setDMPermission(false),
 
@@ -61,55 +61,56 @@ export default {
                 ]);
 
             const embed = new EmbedBuilder()
-                .setTitle('🖥️ System Overview')
-                .setDescription(`Read-only snapshot for **${interaction.guild.name}**. Use the relevant command's dashboard to make changes.`)
+                .setTitle('🖥️ Tổng quan hệ thống')
+                .setDescription(`Ảnh chụp nhanh chỉ đọc cho **${interaction.guild.name}**. Sử dụng bảng điều khiển của lệnh liên quan để thực hiện thay đổi.`)
                 .setColor(getColor('primary'))
                 .addFields(
                     // ── Core systems ──
                     {
                         name: '⚙️ Core Systems',
                         value: [
-                            `🧾 **Audit Logging** — ${pill(Boolean(loggingStatus.enabled))}`,
-                            `📈 **Leveling** — ${pill(Boolean(levelingConfig?.enabled))}`,
-                            `👋 **Welcome** — ${pill(Boolean(welcomeConfig?.enabled))}`,
-                            `👋 **Goodbye** — ${pill(Boolean(welcomeConfig?.goodbyeEnabled))}`,
-                            `🎂 **Birthdays** — ${pill(Boolean(guildConfig.birthdayChannelId))}`,
-                            `📋 **Applications** — ${pill(Boolean(applicationConfig?.enabled))}`,
-                            `✅ **Verification** — ${pill(verificationEnabled)}`,
-                            `🤖 **Auto-Verify** — ${pill(autoVerifyEnabled)}`,
-                            `🎧 **Join to Create** — ${pill(Boolean(joinToCreateConfig?.enabled))}`,
-                            `🛡️ **Auto Role** — ${autoRoleId ? `✅ ${formatRoleMention(interaction.guild, autoRoleId)}` : '❌ Off'}`,
+                           `🧾 **Ghi nhật ký Kiểm tra** — ${pill(Boolean(loggingStatus.enabled))}`,
+                            `📈 **Cấp độ** — ${pill(Boolean(levelingConfig?.enabled))}`,
+                            `👋 **Chào mừng** — ${pill(Boolean(welcomeConfig?.enabled))}`,
+                            `👋 **Tạm biệt** — ${pill(Boolean(welcomeConfig?.goodbyeEnabled))}`,
+                            `🎂 **Sinh nhật** — ${pill(Boolean(guildConfig.birthdayChannelId))}`,
+                            `📋 **Ứng dụng** — ${pill(Boolean(applicationConfig?.enabled))}`,
+                            `✅ **Xác minh** — ${pill(verificationEnabled)}`,
+                            `🤖 **Tự động Xác minh** — ${pill(autoVerifyEnabled)}`,
+                            `🎧 **Tham gia để Tạo** — ${pill(Boolean(joinToCreateConfig?.enabled))}`,
+                            `🛡️ **Vai trò Tự động** — ${autoRoleId ? `✅ ${formatRoleMention(interaction.guild, autoRoleId)}` : '❌ Tắt'}`,
                         ].join('\n'),
                         inline: false,
                     },
                     // ── Channels ──
                     {
-                        name: '📡 Configured Channels',
+                        name: '📡 Kênh Đã Cấu hình',
                         value: [
-                            `**Audit Log:** ${auditChannel}`,
-                            `**Ticket Lifecycle:** ${lifecycleChannel}`,
-                            `**Ticket Transcripts:** ${transcriptChannel}`,
-                            `**Reports:** ${reportChannel}`,
-                            `**Birthdays:** ${birthdayChannel}`,
+                            `**Nhật ký Kiểm tra:** ${auditChannel}`,
+                            `**Vòng đời Vé:** ${lifecycleChannel}`,
+                            `**Bản ghi Vé:** ${transcriptChannel}`,
+                            `**Báo cáo:** ${reportChannel}`,
+                            `**Sinh nhật:** ${birthdayChannel}`,
                         ].join('\n'),
                         inline: false,
                     },
                     // ── Refresh stamp ──
                     {
-                        name: '🕒 Snapshot Taken',
+                        name: '🕒 Ảnh chụp được lấy',
                         value: `<t:${Math.floor(Date.now() / 1000)}:R>`,
                         inline: true,
                     },
                 )
-                .setFooter({ text: 'Read-only — run /logging dashboard to manage audit settings' })
+                .setFooter({ text: 'Chỉ đọc — chạy /logging dashboard để quản lý cài đặt kiểm tra' })
                 .setTimestamp();
 
             await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
         } catch (error) {
             logger.error('overview command error:', error);
             await InteractionHelper.safeEditReply(interaction, {
-                embeds: [errorEmbed('Overview Error', 'Failed to load the system overview.')],
+                embeds: [errorEmbed('Lỗi Tổng quan', 'Không thể tải tổng quan hệ thống.')],
             });
         }
     },
 };
+    
