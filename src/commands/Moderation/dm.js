@@ -8,23 +8,23 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
     data: new SlashCommandBuilder()
         .setName("dm")
-        .setDescription("Send a direct message to a user (Staff only)")
+        .setDescription("Gửi tin nhắn trực tiếp đến một người dùng (Chỉ dành cho nhân viên)")
         .addUserOption(option =>
             option
                 .setName("user")
-                .setDescription("The user to send a DM to")
+                .setDescription("Người dùng để gửi tin nhắn trực tiếp")
                 .setRequired(true)
         )
         .addStringOption(option =>
             option
                 .setName("message")
-                .setDescription("The message to send")
+                .setDescription("Tin nhắn cần gửi")
                 .setRequired(true)
         )
         .addBooleanOption(option =>
             option
                 .setName("anonymous")
-                .setDescription("Send the message anonymously (default: false)")
+                .setDescription("Gửi tin nhắn ẩn danh (mặc định: false)")
                 .setRequired(false)
         )
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
@@ -52,8 +52,8 @@ export default {
                 return await InteractionHelper.safeEditReply(interaction, {
                     embeds: [
                         errorEmbed(
-                            "Message Too Long",
-                            "Messages must be under 2000 characters."
+                            "Tin nhắn quá dài",
+                            "Tin nhắn phải dưới 2000 ký tự."
                         ),
                     ],
                     flags: MessageFlags.Ephemeral,
@@ -65,8 +65,8 @@ export default {
                 return await InteractionHelper.safeEditReply(interaction, {
                     embeds: [
                         errorEmbed(
-                            "Cannot DM Bot",
-                            "You cannot send DMs to bot accounts."
+                            "Không thể gửi tin nhắn trực tiếp đến bot",
+                            "Bạn không thể gửi tin nhắn trực tiếp đến tài khoản bot."
                         ),
                     ],
                     flags: MessageFlags.Ephemeral,
@@ -81,10 +81,10 @@ export default {
             await dmChannel.send({
                 embeds: [
                     successEmbed(
-                        anonymous ? "Message from the Staff Team" : `Message from ${interaction.user.tag}`,
+                        anonymous ? "Tin nhắn từ đội ngũ nhân viên" : `Tin nhắn từ ${interaction.user.tag}`,
                         sanitized
                     ).setFooter({
-                        text: `You cannot reply to this message. | Logger ID: ${interaction.id}`
+                        text: `Bạn không thể trả lời tin nhắn này. | ID nhật ký: ${interaction.id}`
                     })
                 ]
             });
@@ -93,10 +93,10 @@ export default {
                 client: interaction.client,
                 guild: interaction.guild,
                 event: {
-                    action: "DM Sent",
+                    action: "Đã gửi tin nhắn trực tiếp",
                     target: `${targetUser.tag} (${targetUser.id})`,
                     executor: `${interaction.user.tag} (${interaction.user.id})`,
-                    reason: `Anonymous: ${anonymous ? 'Yes' : 'No'}`,
+                    reason: `Ẩn danh: ${anonymous ? 'Có' : 'Không'}`,
                     metadata: {
                         userId: targetUser.id,
                         moderatorId: interaction.user.id,
@@ -109,8 +109,8 @@ export default {
             return await InteractionHelper.safeEditReply(interaction, {
                 embeds: [
                     successEmbed(
-                        "DM Sent",
-                        `Successfully sent a message to ${targetUser.tag}`
+                        "Đã gửi tin nhắn trực tiếp",
+                        `Đã gửi thành công tin nhắn đến ${targetUser.tag}`
                     ),
                 ],
             });
@@ -120,14 +120,14 @@ export default {
 if (error.code === 50007) {
                 return await InteractionHelper.safeEditReply(interaction, {
                     embeds: [
-                        errorEmbed("Error", `Could not send a DM to ${targetUser.tag}. They may have DMs disabled.`),
+                        errorEmbed("Lỗi", `Không thể gửi tin nhắn trực tiếp đến ${targetUser.tag}. Họ có thể đã tắt tin nhắn trực tiếp.`),
                     ],
                 });
             }
             
             return await InteractionHelper.safeEditReply(interaction, {
                 embeds: [
-                    errorEmbed("Error", `Failed to send DM: ${error.message}`),
+                        errorEmbed("Lỗi", `Gửi tin nhắn trực tiếp thất bại: ${error.message}`),
                 ],
             });
         }
