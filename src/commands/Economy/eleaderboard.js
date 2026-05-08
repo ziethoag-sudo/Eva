@@ -7,7 +7,7 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
     data: new SlashCommandBuilder()
         .setName("eleaderboard")
-        .setDescription("View the server's top 10 richest users.")
+        .setDescription("Xem top 10 người dùng giàu nhất trên máy chủ.")
         .setDMPermission(false),
     
     
@@ -29,9 +29,9 @@ export default {
 
             if (allKeys.length === 0) {
                 throw createError(
-                    "No economy data found",
+                    "Không tìm thấy dữ liệu kinh tế",
                     ErrorTypes.VALIDATION,
-                    "No economy data found for this server."
+                    "Không tìm thấy dữ liệu kinh tế cho máy chủ này."
                 );
             }
 
@@ -76,12 +76,12 @@ export default {
 
             const description = leaderboardEntries.length > 0
                 ? leaderboardEntries.join("\n")
-                : "No economy data is available for this server yet.";
+                : "Chưa có dữ liệu kinh tế nào cho máy chủ này.";
 
             const embed = createEmbed({
-                title: `Economy Leaderboard`,
+                title: `Bảng xếp hạng Kinh tế`,
                 description,
-                footer: `Your Rank: ${userRank > 0 ? `#${userRank}` : "No ranking data available"}`,
+                footer: `Thứ hạng của bạn: ${userRank > 0 ? `#${userRank}` : "Không có dữ liệu xếp hạng"}`,
             });
 
             await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
