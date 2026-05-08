@@ -9,13 +9,13 @@ export default {
     async execute(interaction, config, client) {
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             return InteractionHelper.safeReply(interaction, {
-                embeds: [errorEmbed('Permission Denied', 'You need **Administrator** permissions to change log channels.')],
+                embeds: [errorEmbed('Quyền bị từ chối', 'Bạn cần quyền **Quản trị viên** để thay đổi kênh nhật ký.')],
             });
         }
 
         if (!client.db) {
             return InteractionHelper.safeEditReply(interaction, {
-                embeds: [errorEmbed('Database Error', 'Database not initialized.')],
+                embeds: [errorEmbed('Lỗi Cơ Sở Dữ Liệu', 'Cơ sở dữ liệu chưa được khởi tạo.')],
             });
         }
 
@@ -36,7 +36,7 @@ export default {
                 };
                 await setGuildConfig(client, guildId, currentConfig);
                 return InteractionHelper.safeEditReply(interaction, {
-                    embeds: [successEmbed('Logging Disabled 🚫', 'Audit logging has been disabled for this server.')],
+                    embeds: [successEmbed('Ghi Nhật Ký Đã Tắt 🚫', 'Ghi nhật ký kiểm tra đã được tắt cho máy chủ này.')],
                 });
             }
 
@@ -44,7 +44,7 @@ export default {
                 const perms = logChannel.permissionsFor(interaction.guild.members.me);
                 if (!perms.has(PermissionsBitField.Flags.SendMessages) || !perms.has(PermissionsBitField.Flags.EmbedLinks)) {
                     return InteractionHelper.safeEditReply(interaction, {
-                        embeds: [errorEmbed('Bot Permission Error', `I need **Send Messages** and **Embed Links** permissions in ${logChannel}.`)],
+                        embeds: [errorEmbed('Lỗi Quyền Bot', `Tôi cần quyền **Gửi Tin Nhắn** và **Liên Kết Nhúng** trong ${logChannel}.`)],
                     });
                 }
 
@@ -58,7 +58,7 @@ export default {
                 await setGuildConfig(client, guildId, currentConfig);
 
                 await InteractionHelper.safeEditReply(interaction, {
-                    embeds: [successEmbed('Log Channel Set 📝', `Audit logs will be sent to ${logChannel}.`)],
+                    embeds: [successEmbed('Kênh Nhật Ký Đã Đặt 📝', `Nhật ký kiểm tra sẽ được gửi đến ${logChannel}.`)],
                 });
 
                 await logEvent({
@@ -76,12 +76,12 @@ export default {
             }
 
             return InteractionHelper.safeEditReply(interaction, {
-                embeds: [errorEmbed('No Option Provided', 'Provide one of: `channel` or `disable: True`.\n\n> Ticket transcript and logs channels are managed via `/ticket setup` or `/ticket dashboard`.')],
+                embeds: [errorEmbed('Không Cung Cấp Tùy Chọn', 'Cung cấp một trong: `channel` hoặc `disable: True`.\n\n> Kênh bản ghi và nhật ký ticket được quản lý qua `/ticket setup` hoặc `/ticket dashboard`.')],
             });
         } catch (error) {
             logger.error('logging setchannel error:', error);
             await InteractionHelper.safeEditReply(interaction, {
-                embeds: [errorEmbed('Configuration Error', 'Could not save the configuration.')],
+                embeds: [errorEmbed('Lỗi Cấu Hình', 'Không thể lưu cấu hình.')],
             });
         }
     },
