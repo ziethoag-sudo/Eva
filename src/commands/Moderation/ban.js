@@ -8,15 +8,15 @@ import { handleInteractionError } from '../../utils/errorHandler.js';
 export default {
     data: new SlashCommandBuilder()
         .setName("ban")
-        .setDescription("Ban a user from the server")
+        .setDescription("Cấm một người dùng khỏi máy chủ")
         .addUserOption((option) =>
             option
                 .setName("target")
-                .setDescription("The user to ban")
+                .setDescription("Người dùng cần cấm")
                 .setRequired(true),
         )
         .addStringOption((option) =>
-            option.setName("reason").setDescription("Reason for the ban"),
+            option.setName("reason").setDescription("Lý do cấm"),
         )
 .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
     category: "moderation",
@@ -27,10 +27,10 @@ export default {
             const reason = interaction.options.getString("reason") || "No reason provided";
 
             if (user.id === interaction.user.id) {
-                throw new Error("You cannot ban yourself.");
+                throw new Error("Bạn không thể tự cấm chính mình.");
             }
             if (user.id === client.user.id) {
-                throw new Error("You cannot ban the bot.");
+                throw new Error("Bạn không thể cấm bot.");
             }
 
             
@@ -44,8 +44,8 @@ export default {
             await InteractionHelper.universalReply(interaction, {
                 embeds: [
                     successEmbed(
-                        `🚫 **Banned** ${user.tag}`,
-                        `**Reason:** ${reason}\n**Case ID:** #${result.caseId}`,
+                        `🚫 **Đã cấm** ${user.tag}`,
+                        `**Lý do:** ${reason}\n**ID vụ việc:** #${result.caseId}`,
                     ),
                 ],
             });
