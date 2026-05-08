@@ -18,8 +18,8 @@ export default {
                 return await InteractionHelper.safeEditReply(interaction, {
                     embeds: [
                         createEmbed({
-                            title: '❌ No Birthdays Found',
-                            description: 'No birthdays have been set up in this server yet. Use `/birthday set` to add birthdays!',
+                            title: '❌ Không tìm thấy sinh nhật',
+                            description: 'Chưa có sinh nhật nào được thiết lập trong máy chủ này. Dùng `/sinhnhat thietlap` để thêm sinh nhật!',
                             color: 'error'
                         })
                     ]
@@ -27,8 +27,8 @@ export default {
             }
 
             const embed = createEmbed({
-                title: '🎂 Next 5 Upcoming Birthdays',
-                description: `Here are the next 5 birthdays in ${interaction.guild.name}:`,
+                title: '🎂 5 Sinh nhật sắp tới',
+                description: `Đây là 5 sinh nhật sắp tới trong ${interaction.guild.name}:`,
                 color: 'info'
             });
 
@@ -43,16 +43,16 @@ export default {
 
                 let timeUntil = '';
                 if (birthday.daysUntil === 0) {
-                    timeUntil = '🎉 **Today!**';
+                    timeUntil = '🎉 **Hôm nay!**';
                 } else if (birthday.daysUntil === 1) {
-                    timeUntil = '📅 **Tomorrow!**';
+                    timeUntil = '📅 **Ngày mai!**';
                 } else {
-                    timeUntil = `In ${birthday.daysUntil} day${birthday.daysUntil > 1 ? 's' : ''}`;
+                    timeUntil = `Còn ${birthday.daysUntil} ngày`;
                 }
 
                 embed.addFields({
                     name: `${displayIndex}. ${member.displayName}`,
-                    value: `<@${birthday.userId}>\n📅 **Date:** ${birthday.monthName} ${birthday.day}\n⏰ **Time:** ${timeUntil}`,
+                    value: `<@${birthday.userId}>\n📅 **Ngày:** ${birthday.monthName} ${birthday.day}\n⏰ **Thời gian:** ${timeUntil}`,
                     inline: false
                 });
             }
@@ -61,8 +61,8 @@ export default {
                 return await InteractionHelper.safeEditReply(interaction, {
                     embeds: [
                         createEmbed({
-                            title: '❌ No Upcoming Birthdays',
-                            description: 'No upcoming birthdays found for current server members.',
+                            title: '❌ Không có sinh nhật sắp tới',
+                            description: 'Không tìm thấy sinh nhật sắp tới cho các thành viên hiện tại của máy chủ.',
                             color: 'error'
                         })
                     ]
@@ -70,28 +70,28 @@ export default {
             }
 
             embed.setFooter({
-                text: 'Use /birthday set to add your birthday!',
+                text: 'Dùng /sinhnhat thietlap để thêm sinh nhật của bạn!',
                 iconURL: interaction.guild.iconURL()
             });
 
             await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
             
-            logger.info('Next birthdays retrieved successfully', {
+            logger.info('Sinh nhật sắp tới đã được truy xuất thành công', {
                 userId: interaction.user.id,
                 guildId: interaction.guildId,
                 upcomingCount: displayIndex,
-                commandName: 'next_birthdays'
+                commandName: 'sinhnhat_sapto'
             });
         } catch (error) {
-            logger.error('Next birthdays command execution failed', {
+            logger.error('Lỗi thực thi lệnh sinh nhật sắp tới', {
                 error: error.message,
                 stack: error.stack,
                 userId: interaction.user.id,
                 guildId: interaction.guildId,
-                commandName: 'next_birthdays'
+                commandName: 'sinhnhat_sapto'
             });
             await handleInteractionError(interaction, error, {
-                commandName: 'next_birthdays',
+                commandName: 'sinhnhat_sapto',
                 source: 'next_birthdays_module'
             });
         }
