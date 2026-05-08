@@ -14,11 +14,11 @@ const GAMBLE_COOLDOWN = 5 * 60 * 1000;
 export default {
     data: new SlashCommandBuilder()
         .setName('gamble')
-        .setDescription('Gamble your money for a chance to win more')
+        .setDescription('Đánh cược tiền của bạn để có cơ hội thắng nhiều hơn')
         .addIntegerOption(option =>
             option
                 .setName('amount')
-                .setDescription('Amount of cash to gamble')
+                .setDescription('Số tiền mặt để đánh cược')
                 .setRequired(true)
                 .setMinValue(1)
         ),
@@ -43,18 +43,18 @@ export default {
                 const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
 
                 throw createError(
-                    "Gamble cooldown active",
+                    "Thời gian hồi chiêu đánh cược đang hoạt động",
                     ErrorTypes.RATE_LIMIT,
-                    `You need to cool down before gambling again. Wait **${minutes}m ${seconds}s**.`,
+                    `Bạn cần hạ nhiệt trước khi đánh cược lại. Chờ **${minutes}m ${seconds}s**.`,
                     { remaining, cooldownType: 'gamble' }
                 );
             }
 
             if (userData.wallet < betAmount) {
                 throw createError(
-                    "Insufficient cash for gamble",
+                    "Không đủ tiền mặt để đánh cược",
                     ErrorTypes.VALIDATION,
-                    `You only have $${userData.wallet.toLocaleString()} cash, but you are trying to bet $${betAmount.toLocaleString()}.`,
+                    `Bạn chỉ có $${userData.wallet.toLocaleString()} tiền mặt, nhưng bạn đang cố gắng đặt cược $${betAmount.toLocaleString()}.`,
                     { required: betAmount, current: userData.wallet }
                 );
             }
@@ -68,14 +68,14 @@ export default {
             if (cloverCount > 0) {
                 winChance += CLOVER_WIN_BONUS;
                 userData.inventory["lucky_clover"] -= 1;
-                cloverMessage = `\n🍀 **Lucky Clover Consumed:** Your win chance was boosted!`;
+                cloverMessage = `\n🍀 **Đã tiêu thụ Cỏ bốn lá May mắn:** Cơ hội thắng của bạn đã được tăng cường!`;
                 usedClover = true;
             }
             
             else if (charmCount > 0) {
                 winChance += CHARM_WIN_BONUS;
                 userData.inventory["lucky_charm"] -= 1;
-                cloverMessage = `\n🍀 **Lucky Charm Used (${charmCount - 1} uses remaining):** Your win chance was boosted!`;
+                cloverMessage = `\n🍀 **Đã sử dụng Bùa may mắn (${charmCount - 1} lần sử dụng còn lại):** Cơ hội thắng của bạn đã được tăng cường!`;
                 usedCharm = true;
             }
 
@@ -88,15 +88,15 @@ export default {
 cashChange = amountWon;
 
                 resultEmbed = successEmbed(
-                    "🎉 You Won!",
-                    `You successfully gambled and turned your **$${betAmount.toLocaleString()}** bet into **$${amountWon.toLocaleString()}**!${cloverMessage}`,
+                    "🎉 Bạn đã thắng!",
+                    `Bạn đã đánh cược thành công và biến cược **$${betAmount.toLocaleString()}** của bạn thành **$${amountWon.toLocaleString()}**!${cloverMessage}`,
                 );
             } else {
 cashChange = -betAmount;
 
                 resultEmbed = errorEmbed(
-                    "💔 You Lost...",
-                    `The dice rolled against you. You lost your **$${betAmount.toLocaleString()}** bet.`,
+                    "💔 Bạn đã thua...",
+                    `Xúc xắc lăn chống lại bạn. Bạn đã mất cược **$${betAmount.toLocaleString()}** của mình.`,
                 );
             }
 
@@ -108,22 +108,22 @@ userData.lastGamble = now;
             const newCash = userData.wallet;
 
             resultEmbed.addFields({
-                name: "💵 New Cash Balance",
+                name: "💵 Số dư tiền mặt mới",
                 value: `$${newCash.toLocaleString()}`,
                 inline: true,
             });
 
             if (usedClover) {
                 resultEmbed.setFooter({
-                    text: `You have ${userData.inventory["lucky_clover"]} Lucky Clovers left. Win chance was ${Math.round(winChance * 100)}%.`,
+                    text: `Bạn còn ${userData.inventory["lucky_clover"]} Cỏ bốn lá May mắn. Cơ hội thắng là ${Math.round(winChance * 100)}%.`,
                 });
             } else if (usedCharm) {
                 resultEmbed.setFooter({
-                    text: `You have ${userData.inventory["lucky_charm"]} Lucky Charm uses left. Win chance was ${Math.round(winChance * 100)}%.`,
+                    text: `Bạn còn ${userData.inventory["lucky_charm"]} lần sử dụng Bùa may mắn. Cơ hội thắng là ${Math.round(winChance * 100)}%.`,
                 });
             } else {
                 resultEmbed.setFooter({
-                    text: `Next gamble available in 5 minutes. Base win chance: ${Math.round(BASE_WIN_CHANCE * 100)}%.`,
+                    text: `Đánh cược tiếp theo có sẵn sau 5 phút. Cơ hội thắng cơ bản: ${Math.round(BASE_WIN_CHANCE * 100)}%.`,
                 });
             }
 
