@@ -9,13 +9,13 @@ export default {
     async execute(interaction, config, client) {
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             return InteractionHelper.safeReply(interaction, {
-                embeds: [errorEmbed('Permission Denied', 'You need **Administrator** permissions to manage log filters.')],
+                embeds: [errorEmbed('Quyền bị từ chối', 'Bạn cần quyền **Quản trị viên** để quản lý bộ lọc nhật ký.')],
             });
         }
 
         if (!client.db) {
             return InteractionHelper.safeEditReply(interaction, {
-                embeds: [errorEmbed('Database Error', 'Database not initialized.')],
+                embeds: [errorEmbed('Lỗi Cơ Sở Dữ Liệu', 'Cơ sở dữ liệu chưa được khởi tạo.')],
             });
         }
 
@@ -35,17 +35,17 @@ export default {
 
         if (type === 'user') {
             targetArray = currentConfig.logIgnore.users;
-            entityType = 'User';
+            entityType = 'Người dùng';
             const member = await interaction.guild.members.fetch(entityId).catch(() => null);
             entityName = member ? member.user.tag : `ID: ${entityId}`;
         } else if (type === 'channel') {
             targetArray = currentConfig.logIgnore.channels;
-            entityType = 'Channel';
+            entityType = 'Kênh';
             const channel = interaction.guild.channels.cache.get(entityId);
             entityName = channel ? `#${channel.name}` : `ID: ${entityId}`;
         } else {
             return InteractionHelper.safeEditReply(interaction, {
-                embeds: [errorEmbed('Invalid Type', "Choose `user` or `channel`.")],
+                embeds: [errorEmbed('Loại Không Hợp Lệ', "Chọn `user` hoặc `channel`.")],
             });
         }
 
@@ -54,20 +54,20 @@ export default {
         if (subcommand === 'add') {
             if (targetArray.includes(entityId)) {
                 return InteractionHelper.safeEditReply(interaction, {
-                    embeds: [errorEmbed('Already Filtered', `${entityType} **${entityName}** is already on the ignore list.`)],
+                    embeds: [errorEmbed('Đã Được Lọc', `${entityType} **${entityName}** đã có trong danh sách bỏ qua.`)],
                 });
             }
             targetArray.push(entityId);
-            successMessage = `${entityType} **${entityName}** added to the log ignore list. Events from them will not be logged.`;
+            successMessage = `${entityType} **${entityName}** đã được thêm vào danh sách bỏ qua nhật ký. Sự kiện từ họ sẽ không được ghi nhật ký.`;
         } else if (subcommand === 'remove') {
             const index = targetArray.indexOf(entityId);
             if (index === -1) {
                 return InteractionHelper.safeEditReply(interaction, {
-                    embeds: [errorEmbed('Not Filtered', `${entityType} **${entityName}** was not on the ignore list.`)],
+                    embeds: [errorEmbed('Không Được Lọc', `${entityType} **${entityName}** không có trong danh sách bỏ qua.`)],
                 });
             }
             targetArray.splice(index, 1);
-            successMessage = `${entityType} **${entityName}** removed from the log ignore list. Events will now be logged.`;
+            successMessage = `${entityType} **${entityName}** đã được xóa khỏi danh sách bỏ qua nhật ký. Sự kiện sẽ được ghi nhật ký.`;
         } else {
             return;
         }
@@ -87,12 +87,12 @@ export default {
             });
 
             await InteractionHelper.safeEditReply(interaction, {
-                embeds: [successEmbed('Filter Updated', successMessage)],
+                embeds: [successEmbed('Bộ Lọc Đã Cập Nhật', successMessage)],
             });
         } catch (error) {
             logger.error('logging filter error:', error);
             await InteractionHelper.safeEditReply(interaction, {
-                embeds: [errorEmbed('Database Error', 'Failed to save the filter change.')],
+                embeds: [errorEmbed('Lỗi Cơ Sở Dữ Liệu', 'Không thể lưu thay đổi bộ lọc.')],
             });
         }
     },
