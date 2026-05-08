@@ -22,11 +22,11 @@ const CRIME_TYPES = [
 export default {
     data: new SlashCommandBuilder()
         .setName('crime')
-        .setDescription('Commit a crime to earn money (risky)')
+        .setDescription('Thực hiện tội phạm để kiếm tiền (có rủi ro)')
         .addStringOption(option =>
             option
                 .setName('type')
-                .setDescription('Type of crime to commit')
+                .setDescription('Loại tội phạm cần thực hiện')
                 .setRequired(true)
                 .addChoices(
                     { name: 'Pickpocketing', value: 'pickpocketing' },
@@ -51,9 +51,9 @@ export default {
             if (isJailed) {
                 const timeLeft = Math.ceil((userData.jailedUntil - now) / (1000 * 60));
                 throw createError(
-                    "User is in jail",
+                    "Người dùng đang bị tù",
                     ErrorTypes.RATE_LIMIT,
-                    `You're in jail for ${timeLeft} more minutes!`,
+                    `Bạn đang bị tù trong ${timeLeft} phút nữa!`,
                     { jailTimeRemaining: userData.jailedUntil - now }
                 );
             }
@@ -61,9 +61,9 @@ export default {
             if (now < lastCrime + CRIME_COOLDOWN) {
                 const timeLeft = Math.ceil((lastCrime + CRIME_COOLDOWN - now) / (1000 * 60));
                 throw createError(
-                    "Crime cooldown active",
+                    "Thời gian hồi chiêu tội phạm đang hoạt động",
                     ErrorTypes.RATE_LIMIT,
-                    `You need to wait ${timeLeft} more minutes before committing another crime.`,
+                    `Bạn cần chờ ${timeLeft} phút nữa trước khi thực hiện tội phạm khác.`,
                     { remaining: lastCrime + CRIME_COOLDOWN - now, cooldownType: 'crime' }
                 );
             }
@@ -75,9 +75,9 @@ export default {
 
             if (!crime) {
                 throw createError(
-                    "Invalid crime type",
+                    "Loại tội phạm không hợp lệ",
                     ErrorTypes.VALIDATION,
-                    "Please select a valid crime type.",
+                    "Vui lòng chọn loại tội phạm hợp lệ.",
                     { crimeType }
                 );
             }
@@ -96,8 +96,8 @@ export default {
                 await setEconomyData(client, guildId, userId, userData);
                 
                 const embed = successEmbed(
-                    "Crime Successful!",
-                    `You successfully committed ${crime.name} and earned **${amountEarned}** coins!`
+                    "Tội phạm thành công!",
+                    `Bạn đã thực hiện thành công ${crime.name} và kiếm được **${amountEarned}** xu!`
                 );
                 
                 await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
@@ -109,9 +109,9 @@ export default {
                 await setEconomyData(client, guildId, userId, userData);
                 
                 const embed = errorEmbed(
-                    "Crime Failed!",
-                    `You were caught while attempting ${crime.name} and have been sent to jail! ` +
-                    `You were fined ${fine} coins and will be in jail for 2 hours.`
+                    "Tội phạm thất bại!",
+                    `Bạn đã bị bắt khi cố gắng ${crime.name} và đã bị đưa vào tù! ` +
+                    `Bạn đã bị phạt ${fine} xu và sẽ bị tù trong 2 giờ.`
                 );
                 
                 await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
