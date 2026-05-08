@@ -8,11 +8,11 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
     data: new SlashCommandBuilder()
         .setName('deposit')
-        .setDescription('Deposit money from your wallet into your bank')
+        .setDescription('Gửi tiền từ ví của bạn vào ngân hàng')
         .addStringOption(option =>
             option
                 .setName('amount')
-                .setDescription('Amount to deposit (number or "all")')
+                .setDescription('Số tiền cần gửi (số hoặc "all")')
                 .setRequired(true)
         ),
 
@@ -28,9 +28,9 @@ export default {
             
             if (!userData) {
                 throw createError(
-                    "Failed to load economy data",
+                    "Không thể tải dữ liệu kinh tế",
                     ErrorTypes.DATABASE,
-                    "Failed to load your economy data. Please try again later.",
+                    "Không thể tải dữ liệu kinh tế của bạn. Vui lòng thử lại sau.",
                     { userId, guildId }
                 );
             }
@@ -45,9 +45,9 @@ export default {
 
                 if (isNaN(depositAmount) || depositAmount <= 0) {
                     throw createError(
-                        "Invalid deposit amount",
+                        "Số tiền gửi không hợp lệ",
                         ErrorTypes.VALIDATION,
-                        `Please enter a valid number or 'all'. You entered: \`${amountInput}\``,
+                        `Vui lòng nhập số hợp lệ hoặc 'all'. Bạn đã nhập: \`${amountInput}\``,
                         { amountInput, userId }
                     );
                 }
@@ -55,9 +55,9 @@ export default {
 
             if (depositAmount === 0) {
                 throw createError(
-                    "Zero deposit amount",
+                    "Số tiền gửi bằng 0",
                     ErrorTypes.VALIDATION,
-                    "You have no cash to deposit.",
+                    "Bạn không có tiền mặt để gửi.",
                     { userId, walletBalance: userData.wallet }
                 );
             }
@@ -67,8 +67,8 @@ export default {
                 await interaction.followUp({
                     embeds: [
                         MessageTemplates.ERRORS.INVALID_INPUT(
-                            "deposit amount",
-                            `You tried to deposit more than you have. Depositing your remaining cash: **$${depositAmount.toLocaleString()}**`
+                            "số tiền gửi",
+                            `Bạn đã cố gắng gửi nhiều hơn số tiền bạn có. Đang gửi số tiền mặt còn lại: **$${depositAmount.toLocaleString()}**`
                         )
                     ],
                     flags: ["Ephemeral"],
@@ -79,9 +79,9 @@ export default {
 
             if (availableSpace <= 0) {
                 throw createError(
-                    "Bank is full",
+                    "Ngân hàng đã đầy",
                     ErrorTypes.VALIDATION,
-                    `Your bank is currently full (Max Capacity: $${maxBank.toLocaleString()}). Purchase a **Bank Upgrade** to increase your limit.`,
+                    `Ngân hàng của bạn hiện đang đầy (Dung lượng tối đa: $${maxBank.toLocaleString()}). Mua **Nâng cấp Ngân hàng** để tăng giới hạn.`,
                     { maxBank, currentBank: userData.bank, userId }
                 );
             }
@@ -94,8 +94,8 @@ export default {
                     await interaction.followUp({
                         embeds: [
                             MessageTemplates.ERRORS.INVALID_INPUT(
-                                "deposit amount",
-                                `You only had space for **$${depositAmount.toLocaleString()}** in your bank account (Max: $${maxBank.toLocaleString()}). The rest remains in your cash.`
+                                "số tiền gửi",
+                                `Bạn chỉ có chỗ cho **$${depositAmount.toLocaleString()}** trong tài khoản ngân hàng (Tối đa: $${maxBank.toLocaleString()}). Phần còn lại vẫn ở trong tiền mặt.`
                             )
                         ],
                         flags: ["Ephemeral"],
@@ -105,9 +105,9 @@ export default {
 
             if (depositAmount === 0) {
                 throw createError(
-                    "No space or cash for deposit",
+                    "Không có chỗ hoặc tiền để gửi",
                     ErrorTypes.VALIDATION,
-                    "The amount you tried to deposit was either 0 or exceeded your bank capacity after checking your cash balance.",
+                    "Số tiền bạn cố gắng gửi là 0 hoặc vượt quá dung lượng ngân hàng sau khi kiểm tra số dư tiền mặt.",
                     { depositAmount, availableSpace, walletBalance: userData.wallet }
                 );
             }
@@ -118,17 +118,17 @@ export default {
             await setEconomyData(client, guildId, userId, userData);
 
             const embed = MessageTemplates.SUCCESS.DATA_UPDATED(
-                "deposit",
-                `You successfully deposited **$${depositAmount.toLocaleString()}** into your bank.`
+                "gửi tiền",
+                `Bạn đã gửi thành công **$${depositAmount.toLocaleString()}** vào ngân hàng.`
             )
                 .addFields(
                     {
-                        name: "💵 New Cash Balance",
+                        name: "💵 Số dư tiền mặt mới",
                         value: `$${userData.wallet.toLocaleString()}`,
                         inline: true,
                     },
                     {
-                        name: "🏦 New Bank Balance",
+                        name: "🏦 Số dư ngân hàng mới",
                         value: `$${userData.bank.toLocaleString()} / $${maxBank.toLocaleString()}`,
                         inline: true,
                     },
