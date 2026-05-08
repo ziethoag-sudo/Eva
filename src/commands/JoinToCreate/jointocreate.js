@@ -18,55 +18,55 @@ import {
 export default {
     data: new SlashCommandBuilder()
         .setName("jointocreate")
-        .setDescription("Manage Join to Create voice channels system.")
+        .setDescription("Quản lý hệ thống kênh thoại Tham gia để Tạo.")
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
         .setDMPermission(false)
         .addSubcommand((subcommand) =>
             subcommand
                 .setName("setup")
-                .setDescription("Set up a new Join to Create voice channel.")
+                .setDescription("Thiết lập kênh thoại Tham gia để Tạo mới.")
                 .addChannelOption((option) =>
                     option
                         .setName("category")
-                        .setDescription("Category to create the channel in.")
+                        .setDescription("Danh mục để tạo kênh trong đó.")
                         .addChannelTypes(ChannelType.GuildCategory)
                 )
                 .addStringOption((option) =>
                     option
                         .setName("channel_name")
-                        .setDescription("Select a template for naming temporary voice channels.")
+                        .setDescription("Chọn mẫu để đặt tên kênh thoại tạm thời.")
                         .addChoices(
-                            { name: "{username}'s Room (Default)", value: "{username}'s Room" },
-                            { name: "{username}'s Channel", value: "{username}'s Channel" },
-                            { name: "{username}'s Lounge", value: "{username}'s Lounge" },
-                            { name: "{username}'s Space", value: "{username}'s Space" },
-                            { name: "{displayName}'s Room", value: "{displayName}'s Room" },
-                            { name: "{username}'s VC", value: "{username}'s VC" },
-                            { name: "🎵 {username}'s Music Room", value: "🎵 {username}'s Music Room" },
-                            { name: "🎮 {username}'s Gaming Room", value: "🎮 {username}'s Gaming Room" },
-                            { name: "💬 {username}'s Chat Room", value: "💬 {username}'s Chat Room" },
-                            { name: "{username}'s Private Room", value: "{username}'s Private Room" }
+                            { name: "Phòng của {username} (Mặc định)", value: "{username}'s Room" },
+                            { name: "Kênh của {username}", value: "{username}'s Channel" },
+                            { name: "Phòng chờ của {username}", value: "{username}'s Lounge" },
+                            { name: "Không gian của {username}", value: "{username}'s Space" },
+                            { name: "Phòng của {displayName}", value: "{displayName}'s Room" },
+                            { name: "VC của {username}", value: "{username}'s VC" },
+                            { name: "🎵 Phòng nhạc của {username}", value: "🎵 {username}'s Music Room" },
+                            { name: "🎮 Phòng chơi game của {username}", value: "🎮 {username}'s Gaming Room" },
+                            { name: "💬 Phòng trò chuyện của {username}", value: "💬 {username}'s Chat Room" },
+                            { name: "Phòng riêng của {username}", value: "{username}'s Private Room" }
                         )
                 )
                 .addIntegerOption((option) =>
                     option
                         .setName("user_limit")
-                        .setDescription("Maximum number of users in temporary channels. (0 = unlimited)")
+                        .setDescription("Số lượng người dùng tối đa trong kênh tạm thời. (0 = không giới hạn)")
                 )
                 .addIntegerOption((option) =>
                     option
                         .setName("bitrate")
-                        .setDescription("Bitrate for temporary channels in kbps (8-96).")
+                        .setDescription("Bitrate cho kênh tạm thời tính bằng kbps (8-96).")
                 )
         )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName("dashboard")
-                .setDescription("Configure an existing Join to Create system.")
+                .setDescription("Cấu hình hệ thống Tham gia để Tạo hiện có.")
                 .addChannelOption((option) =>
                     option
                         .setName("trigger_channel")
-                        .setDescription("The Join to Create trigger channel to configure.")
+                        .setDescription("Kênh kích hoạt Tham gia để Tạo để cấu hình.")
                         .setRequired(true)
                         .addChannelTypes(ChannelType.GuildVoice)
                 )
@@ -80,7 +80,7 @@ export default {
                 throw new TitanBotError(
                     'User lacks ManageGuild permission',
                     ErrorTypes.PERMISSION,
-                    'You need **Manage Server** permission to use this command.'
+                    'Bạn cần quyền **Quản lý máy chủ** để sử dụng lệnh này.'
                 );
             }
 
@@ -99,17 +99,17 @@ export default {
 
         } catch (error) {
             try {
-                let errorMessage = 'An error occurred while executing this command.';
+                let errorMessage = 'Đã xảy ra lỗi khi thực thi lệnh này.';
                 
                 if (error instanceof TitanBotError) {
-                    errorMessage = error.userMessage || 'An error occurred. Please try again.';
+                    errorMessage = error.userMessage || 'Đã xảy ra lỗi. Vui lòng thử lại.';
                     logger.debug(`TitanBotError [${error.type}]: ${error.message}`, error.context || {});
                 } else {
-                    logger.error('Unexpected error in jointocreate command:', error);
-                    errorMessage = 'An unexpected error occurred. Please try again or contact support.';
+                    logger.error('Lỗi không mong muốn trong lệnh jointocreate:', error);
+                    errorMessage = 'Đã xảy ra lỗi không mong muốn. Vui lòng thử lại hoặc liên hệ hỗ trợ.';
                 }
 
-                const errorEmbedObj = errorEmbed("⚠️ Error", errorMessage);
+                const errorEmbedObj = errorEmbed("⚠️ Lỗi", errorMessage);
 
                 if (interaction.deferred) {
                     return await InteractionHelper.safeEditReply(interaction, { embeds: [errorEmbedObj] });
@@ -158,7 +158,7 @@ async function handleSetupSubcommand(interaction, client) {
 
             if (activeTriggerChannels.length > 0) {
                 const primaryTrigger = activeTriggerChannels[0];
-                const errorMessage = `This server already has a Join to Create channel set up: ${primaryTrigger}\n\nUse \`/jointocreate dashboard\` to modify it, or remove it first before creating a new one.`;
+                const errorMessage = `Máy chủ này đã có kênh Tham gia để Tạo được thiết lập: ${primaryTrigger}\n\nSử dụng \`/jointocreate dashboard\` để chỉnh sửa, hoặc xóa nó trước khi tạo kênh mới.`;
 
                 throw new TitanBotError(
                     'Guild already has a Join to Create channel',
@@ -210,13 +210,13 @@ async function handleSetupSubcommand(interaction, client) {
         logger.info(`Successfully created Join to Create system in guild ${guildId}`);
 
         const responseEmbed = successEmbed(
-            '✅ Setup Complete',
-            `Created Join to Create channel: ${triggerChannel}\n\n` +
-            `**Settings:**\n` +
-            `• Template: \`${nameTemplate}\`\n` +
-            `• User Limit: ${userLimit === 0 ? 'Unlimited' : userLimit + ' users'}\n` +
+            '✅ Thiết lập hoàn tất',
+            `Đã tạo kênh Tham gia để Tạo: ${triggerChannel}\n\n` +
+            `**Cài đặt:**\n` +
+            `• Mẫu: \`${nameTemplate}\`\n` +
+            `• Giới hạn người dùng: ${userLimit === 0 ? 'Không giới hạn' : userLimit + ' người'}\n` +
             `• Bitrate: ${bitrate} kbps\n` +
-            `${category ? `• Category: ${category.name}` : '• Category: Root level'}`
+            `${category ? `• Danh mục: ${category.name}` : '• Danh mục: Cấp gốc'}`
         );
 
         return await InteractionHelper.safeEditReply(interaction, { embeds: [responseEmbed] });
@@ -229,7 +229,7 @@ async function handleSetupSubcommand(interaction, client) {
         throw new TitanBotError(
             `Setup failed: ${error.message}`,
             ErrorTypes.DISCORD_API,
-            'Failed to set up Join to Create system. Please check bot permissions.'
+            'Không thể thiết lập hệ thống Tham gia để Tạo. Vui lòng kiểm tra quyền của bot.'
         );
     }
 }
@@ -245,18 +245,18 @@ async function handleConfigSubcommand(interaction, client) {
 
         
         const configEmbed = new EmbedBuilder()
-            .setTitle('⚙️ Join to Create Configuration')
-            .setDescription(`Configuration for ${triggerChannel}`)
+            .setTitle('⚙️ Cấu hình Tham gia để Tạo')
+            .setDescription(`Cấu hình cho ${triggerChannel}`)
             .setColor(getColor('info'))
             .addFields(
                 {
-                    name: '📝 Channel Name Template',
+                    name: '📝 Mẫu tên kênh',
                     value: `\`${channelConfig.nameTemplate || currentConfig.channelNameTemplate || "{username}'s Room"}\``,
                     inline: false
                 },
                 {
-                    name: '👥 User Limit',
-                    value: `${(channelConfig.userLimit ?? currentConfig.userLimit ?? 0) === 0 ? 'Unlimited' : (channelConfig.userLimit ?? currentConfig.userLimit ?? 0) + ' users'}`,
+                    name: '👥 Giới hạn người dùng',
+                    value: `${(channelConfig.userLimit ?? currentConfig.userLimit ?? 0) === 0 ? 'Không giới hạn' : (channelConfig.userLimit ?? currentConfig.userLimit ?? 0) + ' người'}`,
                     inline: true
                 },
                 {
@@ -265,18 +265,18 @@ async function handleConfigSubcommand(interaction, client) {
                     inline: true
                 }
             )
-            .setFooter({ text: 'Use the buttons below to modify settings • Only one trigger channel is supported per guild' })
+            .setFooter({ text: 'Sử dụng các nút bên dưới để chỉnh sửa cài đặt • Chỉ hỗ trợ một kênh kích hoạt mỗi máy chủ' })
             .setTimestamp();
 
         
         const nameButton = new ButtonBuilder()
             .setCustomId(`jtc_config_name_${triggerChannel.id}`)
-            .setLabel('📝 Name Template')
+            .setLabel('📝 Mẫu tên')
             .setStyle(ButtonStyle.Primary);
 
         const limitButton = new ButtonBuilder()
             .setCustomId(`jtc_config_limit_${triggerChannel.id}`)
-            .setLabel('👥 User Limit')
+            .setLabel('👥 Giới hạn người dùng')
             .setStyle(ButtonStyle.Primary);
 
         const bitrateButton = new ButtonBuilder()
@@ -286,7 +286,7 @@ async function handleConfigSubcommand(interaction, client) {
 
         const deleteButton = new ButtonBuilder()
             .setCustomId(`jtc_config_delete_${triggerChannel.id}`)
-            .setLabel('🗑️ Remove Channel')
+            .setLabel('🗑️ Xóa kênh')
             .setStyle(ButtonStyle.Danger);
 
         const row = new ActionRowBuilder().addComponents(nameButton, limitButton, bitrateButton, deleteButton);
