@@ -18,10 +18,10 @@ import {
 function getApplicationStatusPresentation(statusValue) {
     const normalized = typeof statusValue === 'string' ? statusValue.trim().toLowerCase() : 'unknown';
     const statusLabel =
-        normalized === 'pending' ? 'In Progress' :
-        normalized === 'approved' ? 'Accepted' :
-        normalized === 'denied' ? 'Denied' :
-        'Unknown';
+        normalized === 'pending' ? 'Đang xử lý' :
+        normalized === 'approved' ? 'Đã chấp nhận' :
+        normalized === 'denied' ? 'Đã từ chối' :
+        'Không xác định';
     const statusEmoji =
         normalized === 'pending' ? '🟡' :
         normalized === 'approved' ? '🟢' :
@@ -33,35 +33,35 @@ function getApplicationStatusPresentation(statusValue) {
 
 export default {
     data: new SlashCommandBuilder()
-        .setName("apply")
-        .setDescription("Manage role applications")
+        .setName("ungdung")
+        .setDescription("Quản lý ứng dụng vai trò")
         .addSubcommand((subcommand) =>
             subcommand
-                .setName("submit")
-                .setDescription("Submit an application for a role")
+                .setName("nop")
+                .setDescription("Nộp đơn ứng tuyển cho vai trò")
                 .addStringOption((option) =>
                     option
-                        .setName("application")
-                        .setDescription("The application you want to submit")
+                        .setName("ungdung")
+                        .setDescription("Đơn ứng tuyển bạn muốn nộp")
                         .setRequired(true)
                         .setAutocomplete(true),
                 ),
         )
         .addSubcommand((subcommand) =>
             subcommand
-                .setName("status")
-                .setDescription("Check the status of your application")
+                .setName("trangthai")
+                .setDescription("Kiểm tra trạng thái đơn ứng tuyển của bạn")
                 .addStringOption((option) =>
                     option
                         .setName("id")
-                        .setDescription("Application ID (leave empty to see all)")
+                        .setDescription("ID đơn ứng tuyển (để trống để xem tất cả)")
                         .setRequired(false),
                 ),
         )
         .addSubcommand((subcommand) =>
             subcommand
-                .setName("list")
-                .setDescription("List available applications to apply for"),
+                .setName("danhsach")
+                .setDescription("Liệt kê các đơn ứng tuyển có sẵn"),
         ),
 
     category: "Community",
@@ -69,7 +69,7 @@ export default {
     execute: withErrorHandling(async (interaction) => {
         if (!interaction.inGuild()) {
             return InteractionHelper.safeReply(interaction, {
-                embeds: [errorEmbed("This command can only be used in a server.")],
+                embeds: [errorEmbed("Lệnh này chỉ có thể được sử dụng trong máy chủ.")],
                 flags: ["Ephemeral"],
             });
         }
@@ -95,9 +95,9 @@ export default {
         
         if (!settings.enabled) {
             throw createError(
-                'Applications are disabled',
+                'Ứng dụng bị tắt',
                 ErrorTypes.CONFIGURATION,
-                'Applications are currently disabled in this server.',
+                'Ứng dụng hiện tại bị tắt trong máy chủ này.',
                 { guildId: guild.id }
             );
         }
@@ -125,7 +125,7 @@ export async function handleApplicationModal(interaction) {
     
     if (!applicationRole) {
         return InteractionHelper.safeEditReply(interaction, {
-            embeds: [errorEmbed('Application configuration not found.')],
+            embeds: [errorEmbed('Không tìm thấy cấu hình ứng dụng.')],
             flags: ["Ephemeral"]
         });
     }
@@ -134,7 +134,7 @@ export async function handleApplicationModal(interaction) {
     
     if (!role) {
         return InteractionHelper.safeEditReply(interaction, {
-            embeds: [errorEmbed('Role not found.')],
+            embeds: [errorEmbed('Không tìm thấy vai trò.')],
             flags: ["Ephemeral"]
         });
     }
@@ -143,7 +143,7 @@ export async function handleApplicationModal(interaction) {
     const settings = await getApplicationSettings(interaction.client, interaction.guild.id);
     
     // Get questions - use per-application questions if they exist, otherwise use global
-    let questions = settings.questions || ["Why do you want this role?", "What is your experience?"];
+    let questions = settings.questions || ["Tại sao bạn muốn có vai trò này?", "Kinh nghiệm của bạn là gì?"];
     const roleSettings = await getApplicationRoleSettings(interaction.client, interaction.guild.id, roleId);
     if (roleSettings.questions && roleSettings.questions.length > 0) {
         questions = roleSettings.questions;
@@ -169,10 +169,10 @@ export async function handleApplicationModal(interaction) {
         });
         
         const embed = successEmbed(
-            'Application Submitted',
-            `Your application for **${applicationRole.name}** has been submitted successfully!\n\n` +
-            `Application ID: \`${application.id}\`\n` +
-            `You can check the status with \`/apply status id:${application.id}\``
+            'Đã nộp đơn ứng tuyển',
+            `Đơn ứng tuyển của bạn cho **${applicationRole.name}** đã được nộp thành công!\n\n` +
+            `ID đơn ứng tuyển: \`${application.id}\`\n` +
+            `Bạn có thể kiểm tra trạng thái với \`/ungdung trangthai id:${application.id}\``
         );
         
         await InteractionHelper.safeEditReply(interaction, { embeds: [embed], flags: ["Ephemeral"] });
@@ -187,12 +187,12 @@ export async function handleApplicationModal(interaction) {
             const logChannel = interaction.guild.channels.cache.get(logChannelId);
             if (logChannel) {
                 const logEmbed = createEmbed({
-                    title: '📝 New Application',
-                    description: `**User:** <@${interaction.user.id}> (${interaction.user.tag})\n` +
-                        `**Application:** ${applicationRole.name}\n` +
-                        `**Role:** ${role.name}\n` +
-                        `**Application ID:** \`${application.id}\`\n` +
-                        `**Status:** 🟡 In Progress`
+                    title: '📝 Đơn ứng tuyển mới',
+                    description: `**Người dùng:** <@${interaction.user.id}> (${interaction.user.tag})\n` +
+                        `**Ứng tuyển:** ${applicationRole.name}\n` +
+                        `**Vai trò:** ${role.name}\n` +
+                        `**ID đơn ứng tuyển:** \`${application.id}\`\n` +
+                        `**Trạng thái:** 🟡 Đang xử lý`
                 }).setColor(getColor('warning'));
                 
                 const logMessage = await logChannel.send({ embeds: [logEmbed] });
@@ -226,27 +226,27 @@ async function handleList(interaction) {
         
         if (applicationRoles.length === 0) {
             return InteractionHelper.safeEditReply(interaction, {
-                embeds: [errorEmbed("No applications are currently available.")],
+                embeds: [errorEmbed("Hiện tại không có đơn ứng tuyển nào có sẵn.")],
             });
         }
 
         const embed = createEmbed({
-            title: "Available Applications",
-            description: "Here are the roles you can apply for:"
+            title: "Đơn ứng tuyển có sẵn",
+            description: "Đây là các vai trò bạn có thể ứng tuyển:"
         });
 
         applicationRoles.forEach((appRole, index) => {
             const role = interaction.guild.roles.cache.get(appRole.roleId);
             embed.addFields({
                 name: `${index + 1}. ${appRole.name}`,
-                value: `**Role:** ${role ? `<@&${appRole.roleId}>` : 'Role not found'}\n` +
-                       `**Apply with:** \`/apply submit application:"${appRole.name}"\``,
+                value: `**Vai trò:** ${role ? `<@&${appRole.roleId}>` : 'Không tìm thấy vai trò'}\n` +
+                       `**Ứng tuyển với:** \`/ungdung nop ungdung:"${appRole.name}"\``,
                 inline: false
             });
         });
 
         embed.setFooter({
-            text: "Use /apply submit application:<name> to apply for any of these roles."
+            text: "Dùng /ungdung nop ungdung:<tên> để ứng tuyển cho bất kỳ vai trò nào trong số này."
         });
 
         return InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
@@ -258,16 +258,16 @@ async function handleList(interaction) {
         });
         
         throw createError(
-            'Failed to load applications',
+            'Không thể tải đơn ứng tuyển',
             ErrorTypes.DATABASE,
-            'Failed to load applications. Please try again later.',
+            'Không thể tải đơn ứng tuyển. Vui lòng thử lại sau.',
             { guildId: interaction.guild.id }
         );
     }
 }
 
 async function handleSubmit(interaction, settings) {
-    const applicationName = interaction.options.getString("application");
+    const applicationName = interaction.options.getString("ungdung");
     const member = interaction.member;
 
     const applicationRoles = await getApplicationRoles(interaction.client, interaction.guild.id);
@@ -280,8 +280,8 @@ async function handleSubmit(interaction, settings) {
         return InteractionHelper.safeEditReply(interaction, {
             embeds: [
                 errorEmbed(
-                    "Application not found.",
-                    "Use `/apply list` to see available applications."
+                    "Không tìm thấy đơn ứng tuyển.",
+                    "Dùng `/ungdung danhsach` để xem các đơn ứng tuyển có sẵn."
                 ),
             ],
             flags: ["Ephemeral"],
@@ -299,7 +299,7 @@ async function handleSubmit(interaction, settings) {
         return InteractionHelper.safeEditReply(interaction, {
             embeds: [
                 errorEmbed(
-                    `You already have a pending application. Please wait for it to be reviewed.`,
+                    `Bạn đã có một đơn ứng tuyển đang chờ. Vui lòng chờ nó được xem xét.`,
                 ),
             ],
             flags: ["Ephemeral"],
@@ -309,17 +309,17 @@ async function handleSubmit(interaction, settings) {
     const role = interaction.guild.roles.cache.get(applicationRole.roleId);
     if (!role) {
         return InteractionHelper.safeEditReply(interaction, {
-            embeds: [errorEmbed('The role for this application no longer exists.')],
+            embeds: [errorEmbed('Vai trò cho đơn ứng tuyển này không còn tồn tại.')],
             flags: ["Ephemeral"]
         });
     }
 
     const modal = new ModalBuilder()
         .setCustomId(`app_modal_${applicationRole.roleId}`)
-        .setTitle(`Application for ${applicationRole.name}`);
+        .setTitle(`Ứng tuyển cho ${applicationRole.name}`);
 
     // Get questions - use per-application questions if they exist, otherwise use global
-    let questions = settings.questions || ["Why do you want this role?", "What is your experience?"];
+    let questions = settings.questions || ["Tại sao bạn muốn có vai trò này?", "Kinh nghiệm của bạn là gì?"];
     const roleSettings = await getApplicationRoleSettings(interaction.client, interaction.guild.id, applicationRole.roleId);
     if (roleSettings.questions && roleSettings.questions.length > 0) {
         questions = roleSettings.questions;
@@ -358,7 +358,7 @@ async function handleStatus(interaction) {
             return InteractionHelper.safeEditReply(interaction, {
                 embeds: [
                     errorEmbed(
-                        "Application not found or you do not have permission to view it.",
+                        "Không tìm thấy đơn ứng tuyển hoặc bạn không có quyền xem nó.",
                     ),
                 ],
                 flags: ["Ephemeral"],
@@ -371,11 +371,11 @@ async function handleStatus(interaction) {
             : 'Unknown date';
         const statusView = getApplicationStatusPresentation(application.status);
         const embed = createEmbed({
-            title: `Application #${application.id} - ${application.roleName || 'Unknown Role'}`,
+            title: `Đơn ứng tuyển #${application.id} - ${application.roleName || 'Vai trò không xác định'}`,
             description:
-                `**Application ID:** \`${application.id}\`\n` +
-                `**Status:** ${statusView.statusEmoji} ${statusView.statusLabel}\n` +
-                `**Submitted:** ${submittedAtDisplay}`
+                `**ID đơn ứng tuyển:** \`${application.id}\`\n` +
+                `**Trạng thái:** ${statusView.statusEmoji} ${statusView.statusLabel}\n` +
+                `**Đã nộp:** ${submittedAtDisplay}`
         });
 
         return InteractionHelper.safeEditReply(interaction, { embeds: [embed], flags: ["Ephemeral"] });
@@ -389,7 +389,7 @@ async function handleStatus(interaction) {
         if (applications.length === 0) {
             return InteractionHelper.safeEditReply(interaction, {
                 embeds: [
-                    errorEmbed("You have not submitted any applications yet."),
+                    errorEmbed("Bạn chưa nộp đơn ứng tuyển nào."),
                 ],
                 flags: ["Ephemeral"],
             });
@@ -400,8 +400,8 @@ async function handleStatus(interaction) {
             .slice(0, 10);
 
         const embed = createEmbed({
-            title: "Your Applications",
-            description: `Showing ${recentApplications.length} recent application(s).`
+            title: "Đơn ứng tuyển của bạn",
+            description: `Hiển thị ${recentApplications.length} đơn ứng tuyển gần đây.`
         });
 
         recentApplications.forEach((application) => {
@@ -412,17 +412,17 @@ async function handleStatus(interaction) {
             const statusView = getApplicationStatusPresentation(application.status);
 
             embed.addFields({
-                name: `${statusView.statusEmoji} ${application.roleName || 'Unknown Role'} (${statusView.statusLabel})`,
+                name: `${statusView.statusEmoji} ${application.roleName || 'Vai trò không xác định'} (${statusView.statusLabel})`,
                 value:
                     `**ID:** \`${application.id}\`\n` +
-                    `**Status:** ${statusView.statusEmoji} ${statusView.statusLabel}\n` +
-                    `**Submitted:** ${submittedAtDisplay}`,
+                    `**Trạng thái:** ${statusView.statusEmoji} ${statusView.statusLabel}\n` +
+                    `**Đã nộp:** ${submittedAtDisplay}`,
                 inline: true,
             });
         });
 
         if (applications.length > recentApplications.length) {
-            embed.setFooter({ text: `Showing latest ${recentApplications.length} of ${applications.length} applications.` });
+            embed.setFooter({ text: `Hiển thị ${recentApplications.length} đơn ứng tuyển gần đây nhất trong tổng số ${applications.length} đơn ứng tuyển.` });
         }
 
         return InteractionHelper.safeEditReply(interaction, { embeds: [embed], flags: ["Ephemeral"] });
