@@ -8,11 +8,11 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
     data: new SlashCommandBuilder()
         .setName('withdraw')
-        .setDescription('Withdraw money from your bank to your wallet')
+        .setDescription('Rút tiền từ ngân hàng vào ví của bạn')
         .addIntegerOption(option =>
             option
                 .setName('amount')
-                .setDescription('Amount to withdraw')
+                .setDescription('Số tiền cần rút')
                 .setRequired(true)
                 .setMinValue(1)
         ),
@@ -28,9 +28,9 @@ export default {
             
             if (!userData) {
                 throw createError(
-                    "Failed to load economy data",
+                    "Không thể tải dữ liệu kinh tế",
                     ErrorTypes.DATABASE,
-                    "Failed to load your economy data. Please try again later.",
+                    "Không thể tải dữ liệu kinh tế của bạn. Vui lòng thử lại sau.",
                     { userId, guildId }
                 );
             }
@@ -39,9 +39,9 @@ export default {
 
             if (withdrawAmount <= 0) {
                 throw createError(
-                    "Invalid withdrawal amount",
+                    "Số tiền rút không hợp lệ",
                     ErrorTypes.VALIDATION,
-                    "You must withdraw a positive amount.",
+                    "Bạn phải rút số tiền dương.",
                     { amount: withdrawAmount, userId }
                 );
             }
@@ -52,9 +52,9 @@ export default {
 
             if (withdrawAmount === 0) {
                 throw createError(
-                    "Empty bank account",
+                    "Tài khoản ngân hàng trống",
                     ErrorTypes.VALIDATION,
-                    "Your bank account is empty.",
+                    "Tài khoản ngân hàng của bạn trống.",
                     { userId, bankBalance: userData.bank }
                 );
             }
@@ -65,17 +65,17 @@ export default {
             await setEconomyData(client, guildId, userId, userData);
 
             const embed = MessageTemplates.SUCCESS.DATA_UPDATED(
-                "withdrawal",
-                `You successfully withdrew **$${withdrawAmount.toLocaleString()}** from your bank.`
+                "rút tiền",
+                `Bạn đã rút thành công **$${withdrawAmount.toLocaleString()}** từ ngân hàng.`
             )
                 .addFields(
                     {
-                        name: "💵 New Cash Balance",
+                        name: "💵 Số dư tiền mặt mới",
                         value: `$${userData.wallet.toLocaleString()}`,
                         inline: true,
                     },
                     {
-                        name: "🏦 New Bank Balance",
+                        name: "🏦 Số dư ngân hàng mới",
                         value: `$${userData.bank.toLocaleString()}`,
                         inline: true,
                     },
