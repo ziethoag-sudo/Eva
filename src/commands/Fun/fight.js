@@ -10,11 +10,11 @@ const EMBED_DESCRIPTION_LIMIT = 4096;
 export default {
     data: new SlashCommandBuilder()
     .setName("fight")
-    .setDescription("Starts a simulated 1v1 text-based battle.")
+    .setDescription("Bắt đầu một trận đấu giả lập 1v1 bằng văn bản.")
     .addUserOption((option) =>
       option
         .setName("opponent")
-        .setDescription("The user to fight.")
+        .setDescription("Người dùng để chiến đấu.")
         .setRequired(true),
     ),
   category: 'Fun',
@@ -29,8 +29,8 @@ export default {
       
       if (challenger.id === opponent.id) {
         const embed = warningEmbed(
-          `**${challenger.username}**, you can't fight yourself! That's a draw before it even starts.`,
-          "⚔️ Invalid Challenge"
+          `**${challenger.username}**, bạn không thể đánh chính mình! Trận đấu hòa trước khi bắt đầu.`,
+          "⚔️ Thách đấu không hợp lệ"
         );
         return await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
       }
@@ -38,8 +38,8 @@ export default {
       
       if (opponent.bot) {
         const embed = warningEmbed(
-          "You can't fight bots! Challenge a real person instead.",
-          "⚔️ Invalid Opponent"
+          "Bạn không thể đánh bot! Hãy thách đấu với người thật.",
+          "⚔️ Đối thủ không hợp lệ"
         );
         return await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
       }
@@ -51,17 +51,17 @@ export default {
 
       const log = [];
       log.push(
-        `💥 **${challenger.username}** challenges **${opponent.username}** to a duel! (Best of ${rounds} rounds)`,
+        `💥 **${challenger.username}** thách đấu **${opponent.username}** trong một trận so găng! (Thi đấu ${rounds} hiệp)`,
       );
 
       for (let i = 1; i <= rounds; i++) {
         const attacker = rand(0, 1) === 0 ? challenger : opponent;
         const target = attacker.id === challenger.id ? opponent : challenger;
         const action = [
-          "throws a wild punch",
-          "lands a critical hit",
-          "uses a weak spell",
-          "parries and counterattacks",
+          "tung một cú đấm điên cuồng",
+          "trúng đòn chí mạng",
+          "dùng một phép yếu ớt",
+          "phản công và chặn đòn",
         ][rand(0, 3)];
         log.push(
           `\n**Round ${i}:** ${attacker.username} ${action} on ${target.username} for ${rand(1, damage)} damage!`,
@@ -69,7 +69,7 @@ export default {
       }
 
       const outcomeText = log.join("\n");
-      const winnerText = `👑 **${winner.username}** has defeated ${loser.username} and claims the victory!`;
+      const winnerText = `👑 **${winner.username}** đã đánh bại ${loser.username} và giành chiến thắng!`;
       const fullDescription = `${outcomeText}\n\n${winnerText}`;
 
       const description = fullDescription.length <= EMBED_DESCRIPTION_LIMIT
@@ -78,7 +78,7 @@ export default {
 
       const embed = successEmbed(
         description,
-        "🏆 Duel Complete!"
+        "🏆 Trận đấu hoàn tất!"
       );
 
       await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
