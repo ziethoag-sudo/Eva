@@ -19,29 +19,29 @@ export default {
             if (result.success) {
                 await InteractionHelper.safeEditReply(interaction, {
                     embeds: [successEmbed(
-                        "Your birthday has been successfully removed from the server.",
-                        "Birthday Removed 🗑️"
+                        "Sinh nhật của bạn đã được xóa khỏi máy chủ thành công.",
+                        "Đã xóa sinh nhật 🗑️"
                     )]
                 });
             } else if (result.notFound) {
                 await InteractionHelper.safeEditReply(interaction, {
                     embeds: [createEmbed({
-                        title: '❌ No Birthday Found',
-                        description: "You don't have a birthday set to remove.",
+                        title: '❌ Không tìm thấy sinh nhật',
+                        description: "Bạn chưa có sinh nhật để xóa.",
                         color: 'error'
                     })]
                 });
             }
         } catch (error) {
-            logger.error("Birthday remove command execution failed", {
+            logger.error("Lỗi thực thi lệnh xóa sinh nhật", {
                 error: error.message,
                 stack: error.stack,
                 userId: interaction.user.id,
                 guildId: interaction.guildId,
-                commandName: 'birthday_remove'
+                commandName: 'sinhnhat_xoa'
             });
             await handleInteractionError(interaction, error, {
-                commandName: 'birthday_remove',
+                commandName: 'sinhnhat_xoa',
                 source: 'birthday_remove_module'
             });
         }
