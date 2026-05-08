@@ -8,11 +8,11 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
     data: new SlashCommandBuilder()
     .setName("mock")
-    .setDescription("cOnVeRtS yOuR tExT tO sPoNgEbOb CaSe.")
+    .setDescription("Chuyển đổi văn bản của bạn sang kiểu SpongeBob.")
     .addStringOption((option) =>
       option
         .setName("text")
-        .setDescription("The text to mock.")
+        .setDescription("Văn bản để chế nhạo.")
         .setRequired(true)
         .setMaxLength(1000),
     ),
@@ -25,9 +25,9 @@ export default {
       
       if (!originalText || originalText.trim().length === 0) {
         throw new TitanBotError(
-          'Empty text provided to mock command',
+          'Không có văn bản hợp lệ cho lệnh mock',
           ErrorTypes.USER_INPUT,
-          'Please provide some text to mock!'
+          'Vui lòng cung cấp văn bản để chế nhạo!'
         );
       }
 
@@ -44,7 +44,7 @@ export default {
         }
       }
 
-      const embed = successEmbed("sPoNgEbOb cAsE", `"${mockedText}"`);
+      const embed = successEmbed("Kiểu sPoNgEbOb", `"${mockedText}"`);
 
       await InteractionHelper.safeReply(interaction, { embeds: [embed] });
       logger.debug(`Mock command executed by user ${interaction.user.id} in guild ${interaction.guildId}`);
