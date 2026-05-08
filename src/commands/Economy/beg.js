@@ -14,7 +14,7 @@ const SUCCESS_CHANCE = 0.7;
 export default {
     data: new SlashCommandBuilder()
         .setName('beg')
-        .setDescription('Beg for a small amount of money'),
+        .setDescription('Xin một số tiền nhỏ'),
 
     execute: withErrorHandling(async (interaction, config, client) => {
         const deferred = await InteractionHelper.safeDefer(interaction);
@@ -29,7 +29,7 @@ export default {
                 throw createError(
                     "Failed to load economy data",
                     ErrorTypes.DATABASE,
-                    "Failed to load your economy data. Please try again later.",
+                    "Không thể tải dữ liệu kinh tế của bạn. Vui lòng thử lại sau.",
                     { userId, guildId }
                 );
             }
@@ -47,7 +47,7 @@ export default {
                 throw createError(
                     "Beg cooldown active",
                     ErrorTypes.RATE_LIMIT,
-                    `You are tired from begging! Try again in **${timeMessage}**.`,
+                    `Bạn mệt mỏi vì xin tiền! Thử lại sau **${timeMessage}**.`,
                     { remainingTime, minutes, seconds, cooldownType: 'beg' }
                 );
             }
@@ -64,10 +64,10 @@ export default {
                 newCash += amountWon;
 
                 const successMessages = [
-                    `A kind stranger drops **$${amountWon.toLocaleString()}** into your cup.`,
-                    `You spotted an unattended wallet! You grab **$${amountWon.toLocaleString()}** and run.`,
-                    `Someone took pity on you and gave you **$${amountWon.toLocaleString()}**!`,
-                    `You found **$${amountWon.toLocaleString()}** under a park bench.`,
+                    `Một người lạ tốt bụng bỏ **$${amountWon.toLocaleString()}** vào ly của bạn.`,
+                    `Bạn phát hiện một chiếc ví không chủ! Bạn cầm **$${amountWon.toLocaleString()}** và chạy.`,
+                    `Ai đó thương hại bạn và cho bạn **$${amountWon.toLocaleString()}**!`,
+                    `Bạn tìm thấy **$${amountWon.toLocaleString()}** dưới ghế công viên.`,
                 ];
 
                 replyEmbed = MessageTemplates.SUCCESS.DATA_UPDATED(
@@ -78,15 +78,15 @@ export default {
                 );
             } else {
                 const failMessages = [
-                    "The police chased you off. You got nothing.",
-                    "Someone yelled, 'Get a job!' and walked past.",
-                    "A squirrel stole the single coin you had.",
-                    "You tried to beg, but you were too embarrassed and gave up.",
+                    "Cảnh sát đuổi bạn đi. Bạn không được gì.",
+                    "Ai đó hét lên, 'Đi làm đi!' và đi qua.",
+                    "Một con sóc ăn cắp đồng xu duy nhất bạn có.",
+                    "Bạn cố xin tiền, nhưng bạn quá xấu hổ và bỏ cuộc.",
                 ];
 
                 replyEmbed = MessageTemplates.ERRORS.INSUFFICIENT_FUNDS(
                     "nothing",
-                    "You failed to get any money from begging."
+                    "Bạn không xin được tiền nào."
                 );
                 replyEmbed.data.description = failMessages[Math.floor(Math.random() * failMessages.length)];
             }
