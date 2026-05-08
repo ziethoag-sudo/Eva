@@ -18,18 +18,18 @@ function stringToHash(str) {
 export default {
     data: new SlashCommandBuilder()
     .setName("ship")
-    .setDescription("Calculate the compatibility score between two people.")
+    .setDescription("Tính điểm tương hợp giữa hai người.")
     .addStringOption((option) =>
       option
         .setName("name1")
-        .setDescription("The first name or user.")
+        .setDescription("Tên hoặc người đầu tiên.")
         .setRequired(true)
         .setMaxLength(100),
     )
     .addStringOption((option) =>
       option
         .setName("name2")
-        .setDescription("The second name or user.")
+        .setDescription("Tên hoặc người thứ hai.")
         .setRequired(true)
         .setMaxLength(100),
     ),
@@ -45,9 +45,9 @@ export default {
       
       if (!name1Raw || name1Raw.trim().length === 0 || !name2Raw || name2Raw.trim().length === 0) {
         throw new TitanBotError(
-          'Empty names provided to ship command',
+          'Không có tên hợp lệ cho lệnh ship',
           ErrorTypes.USER_INPUT,
-          'Please provide valid names for both people!'
+          'Vui lòng cung cấp tên hợp lệ cho cả hai người!'
         );
       }
 
@@ -58,8 +58,8 @@ export default {
       
       if (name1.toLowerCase() === name2.toLowerCase()) {
         const embed = warningEmbed(
-          "💖 Ship Score",
-          `**${name1}** can't be shipped with themselves! Please choose two different people.`
+          "💖 Điểm Ship",
+          `**${name1}** không thể ship với chính họ! Vui lòng chọn hai người khác nhau.`
         );
         return await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
       }
@@ -70,17 +70,17 @@ export default {
 
       let description;
       if (score === 100) {
-        description = "Soulmates! It's destiny, they belong together!";
+        description = "Tri kỉ! Định mệnh rồi, họ sinh ra để dành cho nhau!";
       } else if (score >= 80) {
-        description = "A perfect match! Get the wedding bells ready!";
+        description = "Một cặp hoàn hảo! Chuẩn bị tiếng chuông cưới!";
       } else if (score >= 60) {
-        description = "Solid chemistry. Definitely worth exploring!";
+        description = "Hoá học ổn. Rất đáng để khám phá!";
       } else if (score >= 40) {
-        description = "Just friends status. Maybe with time?";
+        description = "Chỉ là bạn bè. Có lẽ theo thời gian?";
       } else if (score >= 20) {
-        description = "It's a struggle. They might need space.";
+        description = "Còn vật lộn. Họ có thể cần khoảng cách.";
       } else {
-        description = "Zero compatibility. Run for the hills!";
+        description = "Hoàn toàn không hợp. Chạy ngay đi!";
       }
 
       const progressBar =
@@ -88,8 +88,8 @@ export default {
         "░".repeat(10 - Math.floor(score / 10));
 
       const embed = successEmbed(
-        `💖 Ship Score: ${name1} vs ${name2}`,
-        `Compatibility: **${score}%**\n\n\`${progressBar}\`\n\n*${description}*`,
+        `💖 Điểm Ship: ${name1} vs ${name2}`,
+        `Tương hợp: **${score}%**\n\n\`${progressBar}\`\n\n*${description}*`,
       );
 
       await InteractionHelper.safeEditReply(interaction, { embeds: [embed] });
