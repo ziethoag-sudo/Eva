@@ -193,7 +193,7 @@ export async function createInitialHelpMenu(client) {
         .setStyle(ButtonStyle.Link);
 
     const touchpointButton = new ButtonBuilder()
-        .setLabel("Lean Gok")
+        .setLabel("Learn Gok")
         .setURL("https://www.facebook.com/ziet.hoag")
         .setStyle(ButtonStyle.Link);
 
